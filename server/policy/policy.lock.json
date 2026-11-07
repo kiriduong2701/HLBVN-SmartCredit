@@ -1,0 +1,19 @@
+{
+  "history": [
+    {
+      "policy_version": "2026.11-demo.4+v4",
+      "sha256": "e9d96dde00b4766ff504f50374fd4439cbbf6bf847e83fce5d932ebc2bc23eb1",
+      "note": "audited commit 188c43f"
+    },
+    {
+      "policy_version": "2026.11-demo.5",
+      "sha256": "98ff3c2db8fd37cb38e733a4f31ef55278d64708178003bb797c8435ba91b6a9"
+    },
+    {
+      "policy_version": "2026.11-demo.6",
+      "sha256": "8d220a1f808e0c29067d4816b515265c19dbb3bdd6ed7c3ad9bb9b88ac14a7d3"
+    }
+  ],
+  "policy_version": "2026.11-demo.6",
+  "sha256": "8d220a1f808e0c29067d4816b515265c19dbb3bdd6ed7c3ad9bb9b88ac14a7d3"
+}

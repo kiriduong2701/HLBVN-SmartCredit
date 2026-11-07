@@ -1,0 +1,979 @@
+{
+  "note": "All customers, merchants, QR codes, orders and alternative-data records are FICTIONAL. Personas' financial fields are copied from named rows of the supplied dataset. Acquirer BIN 970999 and merchant accounts are fictional; no NAPAS, acquirer, CIC, Open API bank, tax, marketplace, platform, utility, e-wallet or HLBVN system is contacted.",
+  "demo_date": "2026-10-16",
+  "customers": [
+    {
+      "customer_id": "CUS-001",
+      "display_name": "Ta My Kim Tien",
+      "initials": "TT",
+      "account_masked": "•••• 4821",
+      "balance_vnd": 24850000,
+      "derived_from": "HLB_POP_100000005",
+      "fixture_adjustment": null,
+      "persona_note": "Salaried, formal CIC history, verified transactions. Pre-activated Smart Credit line (approved by the real activation engine at seed time). Expected: instant Pay Later checkout within the capacity-based limit.",
+      "applicant": {
+        "customer_profile": "Salaried, with credit history",
+        "has_formal_cic_history": 1,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 16969073,
+        "inflow_cv": 0.0681,
+        "unified_credit_score": 681,
+        "casa_balance_vnd": 7096492,
+        "dti_ratio": 0.3145,
+        "on_time_bill_ratio": 0.9715,
+        "e_wallet_topups_pm": 6,
+        "regular_weekly_pattern": 1,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      },
+      "existing_hlb_products": [],
+      "pre_activated": true,
+      "alternative_data": {},
+      "identity": {
+        "national_id": "079190000101",
+        "id_type": "CCCD (chip)",
+        "ekyc_status": "VERIFIED",
+        "cccd_match": true,
+        "ekyc_method": "NFC chip read + face match (SIMULATED)",
+        "ekyc_on": "2025-09-12",
+        "note": "Fictional 12-digit number; no real national-ID or C06 database is contacted."
+      }
+    },
+    {
+      "customer_id": "CUS-002",
+      "display_name": "Huynh Gia Bao",
+      "initials": "HB",
+      "account_masked": "•••• 1170",
+      "balance_vnd": 6200000,
+      "derived_from": "HLB_POP_100000020",
+      "fixture_adjustment": null,
+      "persona_note": "Gig worker, no CIC history, weak profile (score 423 < 436, on-time bills 0.59 < 0.663). Expected: officer review (AMBER R010-FLAG) - a risk judgement, not a data gap, so no Layer 2 request. The platform pays into the HLB account, so platform data would duplicate Layer 1 (AV-07).",
+      "applicant": {
+        "customer_profile": "Gig / platform workers",
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 14621915,
+        "inflow_cv": 0.5842,
+        "unified_credit_score": 423,
+        "casa_balance_vnd": 1697966,
+        "dti_ratio": 0.2601,
+        "on_time_bill_ratio": 0.5873,
+        "e_wallet_topups_pm": 16,
+        "regular_weekly_pattern": 0,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD",
+          "note": "Bureau checked - no formal history found"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      },
+      "existing_hlb_products": [],
+      "alternative_data": {
+        "gig_platform": {
+          "monthly": [
+            14200000,
+            15100000,
+            13800000,
+            14900000,
+            14600000,
+            14400000
+          ],
+          "subject_match": true,
+          "provider": "Partner ride-hailing platform (simulated)",
+          "match_on": [
+            "national_id",
+            "full_name"
+          ],
+          "payout_destination": "HLB"
+        },
+        "utility_bills": {
+          "on_time": 10,
+          "of": 12,
+          "subject_match": true,
+          "provider": "Utility aggregator (simulated)",
+          "match_on": [
+            "national_id",
+            "full_name"
+          ]
+        }
+      },
+      "identity": {
+        "national_id": "079195000202",
+        "id_type": "CCCD (chip)",
+        "ekyc_status": "VERIFIED",
+        "cccd_match": true,
+        "ekyc_method": "NFC chip read + face match (SIMULATED)",
+        "ekyc_on": "2025-09-12",
+        "note": "Fictional 12-digit number; no real national-ID or C06 database is contacted."
+      }
+    },
+    {
+      "customer_id": "CUS-003",
+      "display_name": "Pham Thi Lan",
+      "initials": "PL",
+      "account_masked": "•••• 3092",
+      "balance_vnd": 15400000,
+      "derived_from": "HLB_POP_100000007",
+      "fixture_adjustment": null,
+      "persona_note": "has_observable_tx = 0 while transaction fields are populated (one of 1,943 such dataset rows). v6: the conflicting HLB values are excluded automatically (data-quality event R-VER-01), the system requests Open Banking (Layer 2) and, once validated, decides automatically (GREEN R001-L2) - no officer.",
+      "applicant": {
+        "customer_profile": "Salaried, no credit history",
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 0,
+        "monthly_inflow_vnd": 11113705,
+        "inflow_cv": 0.1476,
+        "unified_credit_score": 539,
+        "casa_balance_vnd": 10094504,
+        "dti_ratio": 0.3171,
+        "on_time_bill_ratio": 0.9431,
+        "e_wallet_topups_pm": 6,
+        "regular_weekly_pattern": 1,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      },
+      "existing_hlb_products": [],
+      "alternative_data": {
+        "open_banking": {
+          "monthly": [
+            11000000,
+            11200000,
+            11050000,
+            11150000,
+            11100000,
+            11180000
+          ],
+          "subject_match": true,
+          "provider": "Other bank via Open API (simulated)",
+          "match_on": [
+            "national_id",
+            "full_name"
+          ],
+          "credits_by_category": {
+            "salary": [
+              11000000,
+              11200000,
+              11050000,
+              11150000,
+              11100000,
+              11180000
+            ]
+          }
+        },
+        "utility_bills": {
+          "on_time": 11,
+          "of": 12,
+          "subject_match": true,
+          "match_on": [
+            "national_id",
+            "full_name"
+          ],
+          "provider": "Utility aggregator (simulated)"
+        }
+      },
+      "identity": {
+        "national_id": "079192000303",
+        "id_type": "CCCD (chip)",
+        "ekyc_status": "VERIFIED",
+        "cccd_match": true,
+        "ekyc_method": "NFC chip read + face match (SIMULATED)",
+        "ekyc_on": "2025-09-12",
+        "note": "Fictional 12-digit number; no real national-ID or C06 database is contacted."
+      }
+    },
+    {
+      "customer_id": "CUS-004",
+      "display_name": "Vo Minh Khoa",
+      "initials": "VK",
+      "account_masked": "•••• 5528",
+      "balance_vnd": 11800000,
+      "derived_from": "HLB_POP_100000023",
+      "fixture_adjustment": null,
+      "persona_note": "rapid_drain_flag = 1 (one of 266 dataset rows) and an existing HLB personal loan. Inflow 18.2M includes 1.46M of own-account transfers, which are excluded from income. Expected: Amber review on Layer 1 data; single exposure view shows both products (the personal loan is already in the bureau DTI, so it is not double-counted); capacity supports about VND 33M, so an officer can approve below VND 90M.",
+      "applicant": {
+        "customer_profile": "Salaried, with credit history",
+        "has_formal_cic_history": 1,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 18161654,
+        "inflow_cv": 0.088,
+        "unified_credit_score": 615,
+        "casa_balance_vnd": 11776164,
+        "dti_ratio": 0.2236,
+        "on_time_bill_ratio": 0.8869,
+        "e_wallet_topups_pm": 5,
+        "regular_weekly_pattern": 1,
+        "rapid_drain_flag": 1
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT",
+          "inflow_breakdown": {
+            "salary": 16700000,
+            "own_account_transfers": 1461654
+          },
+          "inflow_breakdown_note": "Simulated HLB core classification of account credits (6-month monthly averages). Own-account transfers are excluded from income (policy income_classification)."
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      },
+      "existing_hlb_products": [
+        {
+          "product": "HLB_PERSONAL_LOAN",
+          "label": "HLB Unsecured Personal Loan (simulated)",
+          "outstanding_vnd": 36000000,
+          "monthly_instalment_vnd": 1650000,
+          "included_in_dti": true,
+          "note": "Shown in the single exposure view. Its instalment is assumed to be included in the credit-information DTI (dti_ratio)."
+        }
+      ],
+      "alternative_data": {
+        "open_banking": {
+          "monthly": [
+            18000000,
+            18200000,
+            17900000,
+            18100000,
+            18300000,
+            18000000
+          ],
+          "subject_match": true,
+          "provider": "Other bank via Open API (simulated)",
+          "match_on": [
+            "national_id",
+            "full_name"
+          ],
+          "credits_by_category": {
+            "salary": [
+              18000000,
+              18200000,
+              17900000,
+              18100000,
+              18300000,
+              18000000
+            ]
+          }
+        }
+      },
+      "identity": {
+        "national_id": "079188000404",
+        "id_type": "CCCD (chip)",
+        "ekyc_status": "VERIFIED",
+        "cccd_match": true,
+        "ekyc_method": "NFC chip read + face match (SIMULATED)",
+        "ekyc_on": "2025-09-12",
+        "note": "Fictional 12-digit number; no real national-ID or C06 database is contacted."
+      }
+    },
+    {
+      "customer_id": "CUS-005",
+      "display_name": "Dang Thu Ha",
+      "initials": "DH",
+      "account_masked": "•••• 7731",
+      "balance_vnd": 5400000,
+      "derived_from": "HLB_POP_100000010",
+      "fixture_adjustment": "Transaction-dependent fields removed to model a thin-file applicant whose account exists but has no observable transaction history.",
+      "persona_note": "Thin file: no CIC history, no observable transactions. v6: the system requests Open Banking (income) and utility/telecom history (repayment behaviour, because there is no CIC record or bill-payment ratio) with unticked per-source consent; e-wallet is not requested (no decision use). Validated -> automatic decision. Declining every source -> RED R020-EVD (capacity cannot be verified), appeal allowed. CIC 'no record' = zero external obligations.",
+      "applicant": {
+        "customer_profile": "Salaried, no credit history",
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 0,
+        "monthly_inflow_vnd": null,
+        "inflow_cv": null,
+        "unified_credit_score": 514,
+        "casa_balance_vnd": null,
+        "dti_ratio": 0.3052,
+        "on_time_bill_ratio": null,
+        "e_wallet_topups_pm": null,
+        "regular_weekly_pattern": null,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        }
+      },
+      "existing_hlb_products": [],
+      "alternative_data": {
+        "open_banking": {
+          "monthly": [
+            12000000,
+            12000000,
+            12150000,
+            11900000,
+            12000000,
+            12050000
+          ],
+          "subject_match": true,
+          "provider": "Other bank via Open API (simulated)",
+          "match_on": [
+            "national_id",
+            "full_name"
+          ],
+          "credits_by_category": {
+            "salary": [
+              12000000,
+              12000000,
+              12150000,
+              11900000,
+              12000000,
+              12050000
+            ]
+          }
+        },
+        "utility_bills": {
+          "on_time": 12,
+          "of": 12,
+          "subject_match": true,
+          "provider": "Utility aggregator (simulated)",
+          "match_on": [
+            "national_id",
+            "full_name"
+          ]
+        },
+        "ewallet": {
+          "topups_pm": 12,
+          "subject_match": true,
+          "provider": "Partner e-wallet (simulated)",
+          "match_on": [
+            "national_id",
+            "full_name"
+          ]
+        }
+      },
+      "identity": {
+        "national_id": "079197000505",
+        "id_type": "CCCD (chip)",
+        "ekyc_status": "VERIFIED",
+        "cccd_match": true,
+        "ekyc_method": "NFC chip read + face match (SIMULATED)",
+        "ekyc_on": "2025-09-12",
+        "note": "Fictional 12-digit number; no real national-ID or C06 database is contacted."
+      }
+    },
+    {
+      "customer_id": "CUS-006",
+      "display_name": "Le Hoang Nam",
+      "initials": "LN",
+      "account_masked": "•••• 6604",
+      "balance_vnd": 9100000,
+      "derived_from": "HLB_POP_100000035",
+      "fixture_adjustment": "customer_profile removed to model a missing mandatory field.",
+      "persona_note": "Customer segment (employment profile) missing. v6: no question is asked - the segment only chooses Layer 2 sources. Income is verified from 6 months of HLB transactions, so the case is decided automatically (GREEN).",
+      "applicant": {
+        "customer_profile": null,
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 25801158,
+        "inflow_cv": 0.296,
+        "unified_credit_score": 624,
+        "casa_balance_vnd": 23890219,
+        "dti_ratio": 0.3269,
+        "on_time_bill_ratio": 0.8302,
+        "e_wallet_topups_pm": 14,
+        "regular_weekly_pattern": 0,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      },
+      "existing_hlb_products": [],
+      "alternative_data": {
+        "marketplace": {
+          "monthly": [
+            61000000,
+            58500000,
+            64000000,
+            59000000,
+            62500000,
+            60000000
+          ],
+          "subject_match": true,
+          "provider": "Partner marketplace (simulated)",
+          "match_on": [
+            "national_id",
+            "full_name"
+          ],
+          "payout_destination": "HLB"
+        },
+        "e_invoice": {
+          "monthly": [
+            83000000,
+            79000000,
+            88000000,
+            81000000,
+            85500000,
+            82000000
+          ],
+          "subject_match": true,
+          "provider": "Authorised e-invoice provider (simulated)",
+          "match_on": [
+            "national_id",
+            "full_name"
+          ]
+        }
+      },
+      "identity": {
+        "national_id": "079185000606",
+        "id_type": "CCCD (chip)",
+        "ekyc_status": "VERIFIED",
+        "cccd_match": true,
+        "ekyc_method": "NFC chip read + face match (SIMULATED)",
+        "ekyc_on": "2025-09-12",
+        "note": "Fictional 12-digit number; no real national-ID or C06 database is contacted."
+      }
+    },
+    {
+      "customer_id": "CUS-007",
+      "display_name": "Nguyen Thanh Truc",
+      "initials": "NT",
+      "account_masked": "•••• 2458",
+      "balance_vnd": 8700000,
+      "derived_from": "HLB_POP_100000070",
+      "fixture_adjustment": null,
+      "persona_note": "Gig worker with NO CIC history but a sufficient verified profile. Expected: GREEN activation with a capacity-based limit on the 25th-percentile month; missing CIC is never a decline reason. Activating with a desired limit above capacity returns a counter-offer; 'ask for more' starts an automated Layer 2 request (Open Banking + delivery-platform earnings paid into another bank). The platform payouts appear in both sources and are counted once (AV-07); the 1.0M monthly transfers from the customer's own HLB account are excluded.",
+      "applicant": {
+        "customer_profile": "Gig / platform workers",
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 12998865,
+        "inflow_cv": 0.4812,
+        "unified_credit_score": 462,
+        "casa_balance_vnd": 3271824,
+        "dti_ratio": 0.2337,
+        "on_time_bill_ratio": 0.8339,
+        "e_wallet_topups_pm": 11,
+        "regular_weekly_pattern": 1,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD",
+          "note": "No formal history found"
+        }
+      },
+      "existing_hlb_products": [],
+      "alternative_data": {
+        "gig_platform": {
+          "monthly": [
+            6100000,
+            5800000,
+            6400000,
+            6000000,
+            6250000,
+            5950000
+          ],
+          "subject_match": true,
+          "match_on": [
+            "national_id",
+            "registered_phone"
+          ],
+          "payout_destination": "OTHER_BANK",
+          "provider": "Partner delivery platform (simulated)"
+        },
+        "open_banking": {
+          "monthly": [
+            7100000,
+            6800000,
+            7400000,
+            7000000,
+            7250000,
+            6950000
+          ],
+          "subject_match": true,
+          "match_on": [
+            "national_id",
+            "full_name"
+          ],
+          "provider": "Other bank via Open API (simulated)",
+          "credits_by_category": {
+            "platform_payouts": [
+              6100000,
+              5800000,
+              6400000,
+              6000000,
+              6250000,
+              5950000
+            ],
+            "own_transfers_from_hlb": [
+              1000000,
+              1000000,
+              1000000,
+              1000000,
+              1000000,
+              1000000
+            ]
+          }
+        }
+      },
+      "identity": {
+        "national_id": "079196000707",
+        "id_type": "CCCD (chip)",
+        "ekyc_status": "VERIFIED",
+        "cccd_match": true,
+        "ekyc_method": "NFC chip read + face match (SIMULATED)",
+        "ekyc_on": "2025-09-12",
+        "note": "Fictional 12-digit number; no real national-ID or C06 database is contacted."
+      }
+    }
+  ],
+  "merchants": [
+    {
+      "merchant_id": "M-ABC",
+      "name": "ABC Electronics",
+      "qr_name": "ABC ELECTRONICS",
+      "category": "Consumer electronics",
+      "city": "District 1, HCMC",
+      "qr_city": "HO CHI MINH",
+      "mcc": "5732",
+      "acquirer_bin": "970999",
+      "merchant_account": "1000012345",
+      "partner_merchant": true,
+      "partner_program": "So Ban Hang pilot cohort (proposed)",
+      "initials": "AE"
+    },
+    {
+      "merchant_id": "M-SLA",
+      "name": "Song Lam Home Appliances",
+      "qr_name": "SONG LAM APPLIANCES",
+      "category": "Home appliances",
+      "city": "District 10, HCMC",
+      "qr_city": "HO CHI MINH",
+      "mcc": "5722",
+      "acquirer_bin": "970999",
+      "merchant_account": "1000023456",
+      "partner_merchant": true,
+      "partner_program": "So Ban Hang pilot cohort (proposed)",
+      "initials": "SL"
+    },
+    {
+      "merchant_id": "M-MKM",
+      "name": "Mekong Motorbikes",
+      "qr_name": "MEKONG MOTORBIKES",
+      "category": "Vehicles",
+      "city": "Thu Duc, HCMC",
+      "qr_city": "HO CHI MINH",
+      "mcc": "5571",
+      "acquirer_bin": "970999",
+      "merchant_account": "1000034567",
+      "partner_merchant": true,
+      "partner_program": "So Ban Hang pilot cohort (proposed)",
+      "initials": "MM"
+    },
+    {
+      "merchant_id": "M-FPL",
+      "name": "Saigon Skills Academy",
+      "qr_name": "SAIGON SKILLS ACADEMY",
+      "category": "Education",
+      "city": "District 3, HCMC",
+      "qr_city": "HO CHI MINH",
+      "mcc": "8299",
+      "acquirer_bin": "970999",
+      "merchant_account": "1000045678",
+      "partner_merchant": true,
+      "partner_program": "So Ban Hang pilot cohort (proposed)",
+      "initials": "SA"
+    },
+    {
+      "merchant_id": "M-SHF",
+      "name": "Saigon Home Furniture",
+      "qr_name": "SAIGON HOME FURNITURE",
+      "category": "Furniture",
+      "city": "District 7, HCMC",
+      "qr_city": "HO CHI MINH",
+      "mcc": "5712",
+      "acquirer_bin": "970999",
+      "merchant_account": "1000056789",
+      "partner_merchant": true,
+      "partner_program": "So Ban Hang pilot cohort (proposed)",
+      "initials": "SH"
+    },
+    {
+      "merchant_id": "M-VTU",
+      "name": "VinaTopUp Vouchers",
+      "qr_name": "VINATOPUP",
+      "category": "Stored-value vouchers",
+      "city": "Online",
+      "qr_city": "HA NOI",
+      "mcc": "6540",
+      "acquirer_bin": "970999",
+      "merchant_account": "1000067890",
+      "partner_merchant": false,
+      "partner_program": null,
+      "initials": "VT"
+    },
+    {
+      "merchant_id": "M-BHB",
+      "name": "Bach Hoa Books",
+      "qr_name": "BACH HOA BOOKS",
+      "category": "Books & stationery",
+      "city": "District 5, HCMC",
+      "qr_city": "HO CHI MINH",
+      "mcc": "5942",
+      "acquirer_bin": "970999",
+      "merchant_account": "1000078901",
+      "partner_merchant": true,
+      "partner_program": "So Ban Hang pilot cohort (proposed)",
+      "initials": "BH"
+    },
+    {
+      "merchant_id": "M-ANC",
+      "name": "An Nhien Cafe",
+      "qr_name": "AN NHIEN CAFE",
+      "category": "Food & beverage",
+      "city": "District 1, HCMC",
+      "qr_city": "HO CHI MINH",
+      "mcc": "5814",
+      "acquirer_bin": "970999",
+      "merchant_account": "1000089012",
+      "partner_merchant": true,
+      "partner_program": "So Ban Hang pilot cohort (proposed)",
+      "initials": "AN"
+    }
+  ],
+  "qr_codes": [
+    {
+      "qr_ref": "QR-261016-0842",
+      "merchant_id": "M-ABC",
+      "amount_vnd": 12000000,
+      "description": "Smartphone, 256GB",
+      "simulated_failures": 0,
+      "bill_number": "A-0842"
+    },
+    {
+      "qr_ref": "QR-261016-0915",
+      "merchant_id": "M-ABC",
+      "amount_vnd": 6400000,
+      "description": "Laptop accessories bundle",
+      "simulated_failures": 0,
+      "bill_number": "A-0915"
+    },
+    {
+      "qr_ref": "QR-261016-1021",
+      "merchant_id": "M-SLA",
+      "amount_vnd": 9900000,
+      "description": "Front-load washing machine",
+      "simulated_failures": 0,
+      "bill_number": "N-1021"
+    },
+    {
+      "qr_ref": "QR-261016-1133",
+      "merchant_id": "M-MKM",
+      "amount_vnd": 15000000,
+      "description": "Scooter down-payment",
+      "simulated_failures": 0,
+      "bill_number": "MK-1133"
+    },
+    {
+      "qr_ref": "QR-261016-1240",
+      "merchant_id": "M-FPL",
+      "amount_vnd": 7200000,
+      "description": "Data analytics course",
+      "simulated_failures": 0,
+      "bill_number": "S-1240"
+    },
+    {
+      "qr_ref": "QR-261016-1352",
+      "merchant_id": "M-SHF",
+      "amount_vnd": 8500000,
+      "description": "3-seat sofa",
+      "simulated_failures": 1,
+      "bill_number": "F-1352"
+    },
+    {
+      "qr_ref": "QR-261016-1418",
+      "merchant_id": "M-VTU",
+      "amount_vnd": 5000000,
+      "description": "Prepaid e-voucher bundle",
+      "simulated_failures": 0,
+      "bill_number": "V-1418"
+    },
+    {
+      "qr_ref": "QR-261016-1505",
+      "merchant_id": "M-BHB",
+      "amount_vnd": 2300000,
+      "description": "Textbook set",
+      "simulated_failures": 0,
+      "bill_number": "B-1505"
+    },
+    {
+      "qr_ref": "QR-261016-1610",
+      "merchant_id": "M-MKM",
+      "amount_vnd": 30000000,
+      "description": "Electric scooter",
+      "simulated_failures": 0,
+      "bill_number": "MK-1610"
+    },
+    {
+      "qr_ref": "QR-261016-1722",
+      "merchant_id": "M-ANC",
+      "amount_vnd": 125000,
+      "description": "2 x iced coffee",
+      "simulated_failures": 0,
+      "bill_number": "C-1722"
+    },
+    {
+      "qr_ref": "QR-261016-1830",
+      "merchant_id": "M-ANC",
+      "amount_vnd": 980000,
+      "description": "Catering voucher",
+      "simulated_failures": 0,
+      "bill_number": "C-1830"
+    },
+    {
+      "qr_ref": "QR-261016-1915",
+      "merchant_id": "M-SHF",
+      "amount_vnd": 95000000,
+      "description": "Full living-room set",
+      "simulated_failures": 0,
+      "bill_number": "F-1915"
+    },
+    {
+      "qr_ref": "QR-261016-2004",
+      "merchant_id": "M-SLA",
+      "amount_vnd": 4500000,
+      "description": "Air purifier",
+      "simulated_failures": 0,
+      "bill_number": "N-2004"
+    },
+    {
+      "qr_ref": "QR-261016-2110",
+      "merchant_id": "M-BHB",
+      "amount_vnd": 3100000,
+      "description": "Stationery bundle",
+      "simulated_failures": 0,
+      "bill_number": "B-2110"
+    },
+    {
+      "qr_ref": "QR-261016-2230",
+      "merchant_id": "M-ABC",
+      "amount_vnd": 3500000,
+      "description": "Wireless earbuds",
+      "simulated_failures": 0,
+      "bill_number": "A-2230"
+    },
+    {
+      "qr_ref": "QR-STATIC-ANC",
+      "merchant_id": "M-ANC",
+      "amount_vnd": null,
+      "description": "Counter QR (static, enter amount)",
+      "simulated_failures": 0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "title": "Instant checkout on an active line (GREEN)",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-0842",
+      "expect": "Pay Later -> transaction checks pass -> hold -> pick an affordable tenure (3 months is shown as not affordable) -> Smart OTP + face (12M > 10M) -> paid -> loan in My Loans."
+    },
+    {
+      "id": 2,
+      "title": "Purchase above available limit -> split tender",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-1610",
+      "expect": "Start scenario 1 first. 30M is above the available limit (limit - outstanding principal - holds) -> AMBER R010-SPLIT: Pay Later up to the available/affordable amount plus Pay Now for the rest, or Pay Now in full, or request a limit increase."
+    },
+    {
+      "id": 3,
+      "title": "Inline activation, GREEN (no CIC history)",
+      "customer_id": "CUS-007",
+      "qr_ref": "QR-261016-1505",
+      "expect": "No line yet -> 'Check my limit' at checkout -> product terms + the legal data-processing step (timer paused) -> GREEN capacity-based limit -> continue in the same checkout."
+    },
+    {
+      "id": 4,
+      "title": "Activation AMBER (risk flag) -> Pay Now -> convert later",
+      "customer_id": "CUS-004",
+      "qr_ref": "QR-261016-2004",
+      "expect": "Rapid-drain flag -> a judgement case for a credit officer, off the counter (case summary assembled automatically). Shopper pays now. After officer approval, convert the purchase to instalments within 7 days."
+    },
+    {
+      "id": 5,
+      "title": "Thin file: system-chosen Layer 2, automatic decision",
+      "customer_id": "CUS-005",
+      "qr_ref": "QR-261016-1240",
+      "expect": "Activate from Products -> the system requests Open Banking (income) and utility history (behaviour, no CIC/bill data) with unticked optional boxes -> validated -> automatic GREEN R001-L2. Declining every source -> RED R020-EVD (capacity unverifiable, appeal open). 'Alternative-data APIs down' -> automatic retry, no officer."
+    },
+    {
+      "id": 6,
+      "title": "No customer question (segment missing)",
+      "customer_id": "CUS-006",
+      "qr_ref": "QR-261016-2110",
+      "expect": "Customer segment missing -> nothing is asked; income is verified from 6 months of HLB transactions -> automatic GREEN."
+    },
+    {
+      "id": 7,
+      "title": "Data conflict -> automated Open Banking -> automatic decision",
+      "customer_id": "CUS-003",
+      "qr_ref": "QR-261016-1021",
+      "expect": "has_observable_tx conflict -> the conflicting HLB values are excluded automatically -> the system requests Open Banking + utility history -> validated -> GREEN R001-L2. No officer."
+    },
+    {
+      "id": 8,
+      "title": "Volatile gig income with risk flags -> officer judgement",
+      "customer_id": "CUS-002",
+      "qr_ref": "QR-261016-1133",
+      "expect": "Gig worker with weak profile -> officer review on the case summary: small automatic capacity, larger average-income maximum; approving above the automatic capacity needs AP-05 (or AP-01). Officers cannot request data (automatic)."
+    },
+    {
+      "id": 9,
+      "title": "Ineligible merchant (MCC 6540)",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-1418",
+      "expect": "Stored-value vouchers -> N/A R030-MER (product scope, not a credit decision) -> Pay Now."
+    },
+    {
+      "id": 10,
+      "title": "Payment failure then retry",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-1352",
+      "expect": "First simulated acquirer attempt fails; hold and approval kept; new Smart OTP; retry succeeds."
+    },
+    {
+      "id": 11,
+      "title": "Arrears freeze and cure",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-2230",
+      "expect": "After scenario 1, presenter +40 days -> instalment overdue (overdue interest accrues, no flat fee) -> line FROZEN, Pay Later RED R020-ARR -> Pay Loan -> unfrozen; the flag clears after 3 instalments paid by their due date."
+    },
+    {
+      "id": 12,
+      "title": "Pay Now with Smart OTP (static counter QR)",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-STATIC-ANC",
+      "expect": "Static QR -> enter amount -> Pay Later N/A (order not verified) -> Smart OTP -> paid."
+    },
+    {
+      "id": 13,
+      "title": "Bank system unavailable (fail-safe)",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-2110",
+      "expect": "Presenter: core system outage -> Pay Later AMBER R010-API -> Pay Now (never auto-approve)."
+    },
+    {
+      "id": 14,
+      "title": "Timer, cancel and expiry release the hold",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-0915",
+      "expect": "Pay Later GREEN places a hold; cancel or presenter 'expire now' releases it; available limit restored."
+    },
+    {
+      "id": 15,
+      "title": "Automatic line renewal before day 90",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-2004",
+      "expect": "Presenter +80 days -> Layer 1 refresh renews the line automatically (never raises it) -> Pay Later still GREEN."
+    },
+    {
+      "id": 16,
+      "title": "Device anomaly (Layer 0) -> Pay Now only",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-0915",
+      "expect": "Presenter: device anomaly on -> Pay Later AMBER R010-FRD, Pay Now with step-up; never a decline."
+    },
+    {
+      "id": 17,
+      "title": "Purchase above VND 90.1M -> in-scope split only",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-1915",
+      "expect": "95M purchase: Pay Later can finance at most the available limit (never above 90.1M per purchase); the rest is paid now, explicitly chosen."
+    },
+    {
+      "id": 18,
+      "title": "Ask for more -> Layer 2 sums income once",
+      "customer_id": "CUS-007",
+      "qr_ref": "QR-261016-1505",
+      "expect": "Activate with a desired limit of 40M -> counter-offer 14M -> 'ask for more' -> Open Banking + delivery-platform earnings -> payouts counted once (AV-07), own transfers excluded -> higher counter-offer 25.5M."
+    }
+  ]
+}

@@ -1,0 +1,1418 @@
+{
+ "base": "http://127.0.0.1:8080",
+ "ran_at": "2026-11-06T14:48:04+0000",
+ "passed": 17,
+ "total": 17,
+ "scenarios": [
+  {
+   "id": 1,
+   "title": "Instant checkout on an active line (GREEN) with face authentication",
+   "result": "PASS",
+   "detail": "monthly 2120000, available 17500000",
+   "ms": 1228
+  },
+  {
+   "id": 2,
+   "title": "Exposure hold + split tender: no silent over-limit decline (concurrent checkouts)",
+   "result": "PASS",
+   "detail": "second checkout split 12200000 PL + 2800000 now; third: split (limit)",
+   "ms": 1269
+  },
+  {
+   "id": 3,
+   "title": "Inline activation GREEN at checkout (no CIC history)",
+   "result": "PASS",
+   "detail": "limit 12000000",
+   "ms": 1229
+  },
+  {
+   "id": 4,
+   "title": "Activation AMBER (risk flag) -> Pay Now -> officer approves -> convert within 7 days",
+   "result": "PASS",
+   "detail": "no uploads; converted to 3 months",
+   "ms": 1255
+  },
+  {
+   "id": 5,
+   "title": "Thin file: system chooses Layer 2 sources; validated data -> automatic decision; declining -> verified RED with appeal",
+   "result": "PASS",
+   "detail": "declined -> RED R020-EVD (appeal); granted -> validated Open Banking + utility -> GREEN 24000000",
+   "ms": 23
+  },
+  {
+   "id": 6,
+   "title": "Segment missing: no customer question, decided on verified data",
+   "result": "PASS",
+   "detail": "GREEN 12000000, nothing asked",
+   "ms": 8
+  },
+  {
+   "id": 7,
+   "title": "Data conflict -> excluded automatically -> automated Open Banking -> automatic decision (no officer)",
+   "result": "PASS",
+   "detail": "approved 22000000 automatically after Layer 2",
+   "ms": 15
+  },
+  {
+   "id": 8,
+   "title": "Weak gig profile: below stressed-capacity minimum for STP, officer decides within the officer maximum with a reason code",
+   "result": "PASS",
+   "detail": "STP capacity 6500000, officer max 20000000; approved 13200000 with AP-05 (blocked: LIMIT_OUTSIDE_CAPACITY, LIMIT_OUTSIDE_CAPACITY, REASON_CODE_NOT_ALLOWED)",
+   "ms": 22
+  },
+  {
+   "id": 9,
+   "title": "Ineligible merchant (MCC 6540) -> Pay Now only",
+   "result": "PASS",
+   "detail": "",
+   "ms": 11
+  },
+  {
+   "id": 10,
+   "title": "Payment failure then retry with fresh authentication",
+   "result": "PASS",
+   "detail": "",
+   "ms": 2447
+  },
+  {
+   "id": 11,
+   "title": "Arrears freeze, Pay Loan, overdue interest, cure only after due dates pass",
+   "result": "PASS",
+   "detail": "overdue interest 9173 VND; cured after due dates 2-4 passed",
+   "ms": 1268
+  },
+  {
+   "id": 12,
+   "title": "Static counter QR -> Pay Now with Smart OTP",
+   "result": "PASS",
+   "detail": "",
+   "ms": 1222
+  },
+  {
+   "id": 13,
+   "title": "Bank system unavailable (fail-safe) and CIC outage",
+   "result": "PASS",
+   "detail": "",
+   "ms": 36
+  },
+  {
+   "id": 14,
+   "title": "Timer expiry releases the hold",
+   "result": "PASS",
+   "detail": "",
+   "ms": 20
+  },
+  {
+   "id": 15,
+   "title": "Security: header impersonation, unauthenticated presenter controls, tampered QR",
+   "result": "PASS",
+   "detail": "",
+   "ms": 8
+  },
+  {
+   "id": 16,
+   "title": "Officer authority = product scope (VND 1.6M-90.1M inclusive) and access without any code",
+   "result": "PASS",
+   "detail": "authority rule approved limit <= VND 90,100,000; 90,200,000 -> ABOVE_APPROVAL_AUTHORITY",
+   "ms": 16
+  },
+  {
+   "id": 17,
+   "title": "Layer 2 failures: outage -> automatic retry; incomplete data -> verified RED with appeal",
+   "result": "PASS",
+   "detail": "outage -> retried -> GREEN; 3-month data rejected -> RED R020-EVD (appeal)",
+   "ms": 84
+  }
+ ],
+ "http_calls": 184,
+ "calls": [
+  {
+   "method": "POST",
+   "path": "/api/session/presenter",
+   "status": 201,
+   "ms": 12.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 45.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.9,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0001/pay-later",
+   "status": 200,
+   "ms": 6.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0001/agreement",
+   "status": 200,
+   "ms": 3.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0001/auth",
+   "status": 201,
+   "ms": 2.3,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/AUTH-261016-0001/verify",
+   "status": 200,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0001/pay",
+   "status": 200,
+   "ms": 1207.8,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 1.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 43.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 2.1,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/me",
+   "status": 200,
+   "ms": 1.2,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0002/pay-later",
+   "status": 200,
+   "ms": 6.0,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 0.8,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 0.9,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0003/pay-later",
+   "status": 200,
+   "ms": 5.4,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0004/pay-later",
+   "status": 200,
+   "ms": 5.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0003/split",
+   "status": 200,
+   "ms": 8.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0003/agreement",
+   "status": 200,
+   "ms": 2.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0003/auth",
+   "status": 201,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/AUTH-261016-0002/verify",
+   "status": 200,
+   "ms": 1.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0003/pay",
+   "status": 200,
+   "ms": 1207.8,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 1.9,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/me",
+   "status": 200,
+   "ms": 3.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0002/cancel",
+   "status": 200,
+   "ms": 4.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0004/cancel",
+   "status": 200,
+   "ms": 3.7,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 1.3,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 45.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 2.0,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0005/pay-later",
+   "status": 200,
+   "ms": 10.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0005/agreement",
+   "status": 200,
+   "ms": 2.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0005/auth",
+   "status": 201,
+   "ms": 1.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/AUTH-261016-0003/verify",
+   "status": 200,
+   "ms": 1.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0005/pay",
+   "status": 200,
+   "ms": 1207.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 39.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.7,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0006/pay-later",
+   "status": 200,
+   "ms": 6.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0006/pay-now",
+   "status": 200,
+   "ms": 2.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0006/auth",
+   "status": 201,
+   "ms": 1.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/AUTH-261016-0004/verify",
+   "status": 200,
+   "ms": 1.9,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0006/pay",
+   "status": 200,
+   "ms": 1205.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/officer",
+   "status": 201,
+   "ms": 2.4,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/officer/cases/ACT-261016-0007",
+   "status": 200,
+   "ms": 2.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/officer/cases/ACT-261016-0007/decision",
+   "status": 200,
+   "ms": 10.9,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/transactions/TXN-261016-0006/conversion",
+   "status": 200,
+   "ms": 4.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0006/auth",
+   "status": 201,
+   "ms": 2.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/AUTH-261016-0005/verify",
+   "status": 200,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0006/convert",
+   "status": 200,
+   "ms": 8.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 51.3,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 2.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/smart-credit/activate",
+   "status": 201,
+   "ms": 4.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/applications/ACT-261016-0009/alternative-data",
+   "status": 200,
+   "ms": 4.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/smart-credit/activate",
+   "status": 201,
+   "ms": 4.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/applications/ACT-261016-0010/alternative-data",
+   "status": 200,
+   "ms": 6.4,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 1.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 37.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/smart-credit/activate",
+   "status": 201,
+   "ms": 5.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/applications/ACT-261016-0012/information",
+   "status": 404,
+   "ms": 0.8,
+   "error": "NOT_FOUND"
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 40.3,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/smart-credit/activate",
+   "status": 201,
+   "ms": 4.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/officer",
+   "status": 201,
+   "ms": 1.7,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/officer/queue",
+   "status": 200,
+   "ms": 1.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/applications/ACT-261016-0014/alternative-data",
+   "status": 200,
+   "ms": 6.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 32.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/smart-credit/activate",
+   "status": 201,
+   "ms": 4.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/officer",
+   "status": 201,
+   "ms": 2.2,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/officer/cases/ACT-261016-0016",
+   "status": 200,
+   "ms": 2.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/officer/cases/ACT-261016-0016/decision",
+   "status": 422,
+   "ms": 1.6,
+   "error": "LIMIT_OUTSIDE_CAPACITY"
+  },
+  {
+   "method": "POST",
+   "path": "/api/officer/cases/ACT-261016-0016/decision",
+   "status": 422,
+   "ms": 1.5,
+   "error": "LIMIT_OUTSIDE_CAPACITY"
+  },
+  {
+   "method": "POST",
+   "path": "/api/officer/cases/ACT-261016-0016/decision",
+   "status": 422,
+   "ms": 1.3,
+   "error": "REASON_CODE_NOT_ALLOWED"
+  },
+  {
+   "method": "POST",
+   "path": "/api/officer/cases/ACT-261016-0016/decision",
+   "status": 422,
+   "ms": 0.9,
+   "error": "REASON_CODE_REQUIRED"
+  },
+  {
+   "method": "POST",
+   "path": "/api/officer/cases/ACT-261016-0016/decision",
+   "status": 200,
+   "ms": 4.8,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 1.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 32.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0007/pay-later",
+   "status": 200,
+   "ms": 5.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 41.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0008/pay-later",
+   "status": 200,
+   "ms": 10.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0008/agreement",
+   "status": 200,
+   "ms": 2.9,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0008/auth",
+   "status": 201,
+   "ms": 2.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/AUTH-261016-0006/verify",
+   "status": 200,
+   "ms": 5.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0008/pay",
+   "status": 200,
+   "ms": 1209.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0008/auth",
+   "status": 201,
+   "ms": 2.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/AUTH-261016-0007/verify",
+   "status": 200,
+   "ms": 2.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0008/pay",
+   "status": 200,
+   "ms": 1206.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 46.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.9,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0009/pay-later",
+   "status": 200,
+   "ms": 6.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0009/tenure",
+   "status": 200,
+   "ms": 2.9,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0009/agreement",
+   "status": 200,
+   "ms": 2.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0009/auth",
+   "status": 201,
+   "ms": 1.9,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/AUTH-261016-0008/verify",
+   "status": 200,
+   "ms": 1.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0009/pay",
+   "status": 200,
+   "ms": 1207.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/clock",
+   "status": 200,
+   "ms": 6.6,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 1.4,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0010/pay-later",
+   "status": 200,
+   "ms": 6.0,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/loans",
+   "status": 200,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/loans/LN-261016-0006/repay",
+   "status": 200,
+   "ms": 5.1,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 0.9,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/loans/LN-261016-0006/repay",
+   "status": 200,
+   "ms": 3.4,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 0.9,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/clock",
+   "status": 200,
+   "ms": 7.4,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 1.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 40.3,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.9,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 3.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0011/pay-now",
+   "status": 200,
+   "ms": 2.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0011/auth",
+   "status": 201,
+   "ms": 2.9,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/auth/AUTH-261016-0009/verify",
+   "status": 200,
+   "ms": 2.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0011/pay",
+   "status": 200,
+   "ms": 1207.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 49.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/controls",
+   "status": 200,
+   "ms": 2.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 2.4,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 2.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0012/pay-later",
+   "status": 200,
+   "ms": 8.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/controls",
+   "status": 200,
+   "ms": 2.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 2.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/smart-credit/activate",
+   "status": 201,
+   "ms": 5.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/controls",
+   "status": 200,
+   "ms": 2.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/clock",
+   "status": 200,
+   "ms": 6.1,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/applications/ACT-261016-0023",
+   "status": 200,
+   "ms": 1.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 42.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 2.0,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 201,
+   "ms": 3.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/transactions/TXN-261016-0013/pay-later",
+   "status": 200,
+   "ms": 6.9,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 1.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/transactions/TXN-261016-0013/expire-now",
+   "status": 200,
+   "ms": 3.1,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/transactions/TXN-261016-0013",
+   "status": 200,
+   "ms": 1.3,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/credit",
+   "status": 200,
+   "ms": 1.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 43.9,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/me",
+   "status": 401,
+   "ms": 1.0,
+   "error": "SIGN_IN_REQUIRED"
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/clock",
+   "status": 401,
+   "ms": 0.9,
+   "error": "SIGN_IN_REQUIRED"
+  },
+  {
+   "method": "GET",
+   "path": "/api/config/policy",
+   "status": 404,
+   "ms": 0.8,
+   "error": "NOT_FOUND"
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.9,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/qr/demo-codes",
+   "status": 200,
+   "ms": 1.3,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/qr/resolve",
+   "status": 422,
+   "ms": 2.2,
+   "error": "QR_CRC_MISMATCH"
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 32.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/officer",
+   "status": 201,
+   "ms": 2.1,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/public/officers",
+   "status": 404,
+   "ms": 0.8,
+   "error": "NOT_FOUND"
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/smart-credit/activate",
+   "status": 201,
+   "ms": 4.5,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/officer",
+   "status": 201,
+   "ms": 2.0,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/officer/cases/ACT-261016-0027",
+   "status": 200,
+   "ms": 2.6,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/officer/cases/ACT-261016-0027/decision",
+   "status": 422,
+   "ms": 1.6,
+   "error": "ABOVE_APPROVAL_AUTHORITY"
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 33.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/controls",
+   "status": 200,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 1.7,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/smart-credit/activate",
+   "status": 201,
+   "ms": 4.3,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/applications/ACT-261016-0029/alternative-data",
+   "status": 200,
+   "ms": 5.4,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/controls",
+   "status": 200,
+   "ms": 1.8,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/clock",
+   "status": 200,
+   "ms": 8.2,
+   "error": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/applications/ACT-261016-0029",
+   "status": 200,
+   "ms": 1.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 44.0,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/controls",
+   "status": 200,
+   "ms": 2.2,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/session/customer",
+   "status": 201,
+   "ms": 2.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/smart-credit/activate",
+   "status": 201,
+   "ms": 5.1,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/applications/ACT-261016-0031/alternative-data",
+   "status": 200,
+   "ms": 5.3,
+   "error": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/presenter/reset",
+   "status": 200,
+   "ms": 40.4,
+   "error": null
+  }
+ ]
+}

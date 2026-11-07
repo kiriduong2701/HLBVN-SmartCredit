@@ -1,0 +1,1177 @@
+{
+  "policy_id": "SMART-CREDIT-DEMO",
+  "policy_version": "2026.11-demo.6",
+  "disclaimer": "Fictional demonstration policy for the HLBVN Business Challenge 2026 prototype. None of these values is an HLBVN lending policy, credit threshold, interest rate or fee. Each value is tagged DOCUMENTED (from the supplied dataset definitions or case brief), OFFICIAL_HLB_SOURCE (published by HLBVN), DATASET_PERCENTILE (describes the dataset, not validated), DEMO_ASSUMPTION (chosen by the team so the prototype can run) or UNRESOLVED (not defined; reported, not enforced). approval_status says whether HLBVN has approved the value: every value here is PENDING_HLBVN_APPROVAL.",
+  "case_ranges": {
+    "requested_loan_vnd": {
+      "min": 1600000,
+      "max": 90100000,
+      "source": "DOCUMENTED",
+      "note": "Observed range of requested_loan_vnd in the supplied dataset."
+    },
+    "loan_tenure_months": {
+      "allowed": [
+        3,
+        6,
+        9,
+        12,
+        18,
+        24
+      ],
+      "source": "DOCUMENTED",
+      "note": "Supported demo tenures given in the brief."
+    },
+    "unified_credit_score": {
+      "min": 350,
+      "max": 850,
+      "source": "DOCUMENTED",
+      "note": "Scale given in the data definition. Used only for validation, never as an approval cut-off."
+    },
+    "on_time_bill_ratio": {
+      "min": 0.0,
+      "max": 1.0,
+      "source": "DOCUMENTED"
+    },
+    "binary_fields": {
+      "fields": [
+        "has_formal_cic_history",
+        "has_observable_tx",
+        "regular_weekly_pattern",
+        "rapid_drain_flag",
+        "internal_delinquency_flag"
+      ],
+      "allowed": [
+        0,
+        1
+      ],
+      "source": "DOCUMENTED"
+    },
+    "non_negative_fields": {
+      "fields": [
+        "monthly_inflow_vnd",
+        "casa_balance_vnd",
+        "inflow_cv",
+        "dti_ratio",
+        "e_wallet_topups_pm"
+      ],
+      "source": "DOCUMENTED",
+      "note": "Definitions describe amounts, counts and ratios; only non-negativity is enforced."
+    },
+    "inflow_cv_upper_bound": {
+      "value": null,
+      "source": "UNRESOLVED",
+      "note": "No documented upper bound for the coefficient of variation."
+    },
+    "dti_ratio_upper_bound": {
+      "value": null,
+      "source": "UNRESOLVED",
+      "note": "No documented valid upper bound. NOT an approval threshold."
+    },
+    "customer_profiles": {
+      "allowed": [
+        "Salaried, with credit history",
+        "Salaried, no credit history",
+        "Gig / platform workers",
+        "First-time borrowers, digitally active",
+        "Online merchants (MSME)"
+      ],
+      "source": "DOCUMENTED"
+    }
+  },
+  "mandatory_fields": {
+    "application": [
+      "application_id",
+      "applicant_id",
+      "qr_ref",
+      "merchant_id",
+      "requested_loan_vnd",
+      "loan_tenure_months"
+    ],
+    "applicant": [],
+    "source": "DEMO_ASSUMPTION",
+    "activation_application": [
+      "application_id",
+      "applicant_id"
+    ],
+    "note": "v6: no field is asked from the customer. customer_profile is a segment label used only to choose Layer 2 sources (unknown -> Open Banking only). Missing CIC / observability flags are source defects handled by the system (re-pull, then obligations unknown / evidence gap)."
+  },
+  "excluded_downstream_fields": {
+    "fields": [
+      "approved_loan_vnd",
+      "interest_rate_pct",
+      "is_default_90d",
+      "manual_approval_status",
+      "manual_decision_days",
+      "manual_review_cost_vnd",
+      "is_abandoned",
+      "stp_approval_status",
+      "stp_decision_minutes",
+      "stp_review_cost_vnd"
+    ],
+    "note": "Outcome / post-decision fields. Never used as pre-assessment inputs."
+  },
+  "data_sources": {
+    "hlb_transactions": {
+      "label": "HLB account & transaction history (simulated)",
+      "consent_category": "hlb_transactions",
+      "fields": [
+        "has_observable_tx",
+        "monthly_inflow_vnd",
+        "inflow_cv",
+        "casa_balance_vnd",
+        "regular_weekly_pattern",
+        "rapid_drain_flag",
+        "on_time_bill_ratio"
+      ],
+      "layer": 1
+    },
+    "credit_information": {
+      "label": "Credit information (simulated CIC-style record)",
+      "consent_category": "credit_information",
+      "fields": [
+        "has_formal_cic_history",
+        "unified_credit_score",
+        "dti_ratio"
+      ],
+      "layer": 1
+    },
+    "e_wallet_activity": {
+      "label": "E-wallet top-up activity (Layer 1 dataset variable)",
+      "consent_category": "e_wallet_activity",
+      "fields": [
+        "e_wallet_topups_pm"
+      ],
+      "layer": 1
+    },
+    "alternative_data": {
+      "label": "Consent-based alternative data (Layer 2, SIMULATED adapters)",
+      "consent_category": "alternative_data",
+      "fields": [
+        "alt_monthly_income_vnd",
+        "alt_income_cv",
+        "alt_on_time_bill_ratio"
+      ],
+      "layer": 2
+    }
+  },
+  "transaction_dependent_fields": {
+    "fields": [
+      "monthly_inflow_vnd",
+      "inflow_cv",
+      "casa_balance_vnd",
+      "regular_weekly_pattern",
+      "on_time_bill_ratio"
+    ],
+    "note": "Fields that should be empty when has_observable_tx = 0. v6: populated values are excluded from use automatically (data-quality event R-VER-01) and the gap is closed by an automated Layer 2 request; e_wallet_topups_pm is partner data, not an HLB transaction field."
+  },
+  "freshness": {
+    "max_age_days": {
+      "value": 90,
+      "source": "DEMO_ASSUMPTION",
+      "note": "Aligned with the 90-day CASA averaging window in the data definition. Not an HLBVN rule."
+    },
+    "require_observation_period": {
+      "value": true,
+      "source": "DEMO_ASSUMPTION"
+    },
+    "note_v6": "Stale or unverified Layer 1 sources are re-pulled once; values still stale are excluded from use (not sent to an officer)."
+  },
+  "consistency_rules": {
+    "profile_requires_cic": {
+      "Salaried, with credit history": 1,
+      "Salaried, no credit history": 0,
+      "First-time borrowers, digitally active": 0
+    },
+    "source": "DOCUMENTED",
+    "note": "Derived from profile labels; matches the dataset cross-tab (no exceptions in 10,000 rows)."
+  },
+  "consent": {
+    "source": "DEMO_ASSUMPTION",
+    "approval_status": "PENDING_HLBVN_LEGAL_COMPLIANCE",
+    "note": "v6: every variable in the supplied dataset is Layer 1. No additional, per-variable or per-source consent is asked for assessing Layer 1 data. Separately, the legally mandated personal-data step is kept: a processing notice plus the customer's consent for the credit-assessment purpose (covering HLB account data, CIC enquiry and the other Layer 1 data), because bank-transaction history and credit information are sensitive personal data (Decree 356/2025/ND-CP) and Law 91/2025/QH15 Art. 19 exceptions (e.g. performing the data subject's agreement) are not confirmed to cover pre-contract credit assessment and a CIC enquiry. Dataset availability does not itself grant permission to process. HLBVN Legal to confirm the legal basis; if Legal confirms a non-consent basis, the checkbox becomes an acknowledgement of the notice. Layer 2 sources each need their own explicit, optional, unticked consent.",
+    "required_categories": [
+      "hlb_transactions",
+      "credit_information",
+      "e_wallet_activity"
+    ],
+    "internal_categories": [
+      "hlb_transactions",
+      "credit_information",
+      "e_wallet_activity"
+    ],
+    "third_party_categories": [
+      "alternative_data"
+    ],
+    "optional_categories": [
+      "alternative_data"
+    ],
+    "activation_consents": [
+      {
+        "id": "SC_TERMS",
+        "required": true,
+        "categories": [],
+        "kind": "CONTRACT",
+        "purpose": "Smart Credit product terms (demo)"
+      },
+      {
+        "id": "DATA_PROCESSING",
+        "required": true,
+        "categories": [
+          "hlb_transactions",
+          "credit_information",
+          "e_wallet_activity"
+        ],
+        "kind": "LEGAL_PERSONAL_DATA",
+        "purpose": "Personal-data notice and consent (legal requirement): HLBVN processes my existing HLB data and makes a CIC enquiry to assess and monitor my Smart Credit limit"
+      }
+    ],
+    "legal_references": [
+      {
+        "ref": "Personal Data Protection Law 91/2025/QH15",
+        "status": "IN_FORCE from 2026-01-01"
+      },
+      {
+        "ref": "Decree 356/2025/ND-CP",
+        "status": "IN_FORCE from 2026-01-01; replaces Decree 13/2023/ND-CP"
+      },
+      {
+        "ref": "Decree 13/2023/ND-CP",
+        "status": "REPLACED - not cited as a current basis"
+      }
+    ],
+    "withdrawal": {
+      "source": "LEGAL_REQUIREMENT (Decree 356/2025/ND-CP, per EY/PwC legal alerts 2026) + DEMO_ASSUMPTION for product effect",
+      "respond_within_working_days": 2,
+      "implement_within_days": 15,
+      "active_line_effect": "Monitoring stops, the line closes to new drawdowns, existing instalment loans continue to be serviced.",
+      "layer2_source_effect": "The source's retrieved data is purged from the application; a decision already taken is not reversed.",
+      "prototype_note": "The prototype implements withdrawals immediately, inside the legal deadlines."
+    }
+  },
+  "evidence_requirement": {
+    "source": "DEMO_ASSUMPTION",
+    "description": "At least ONE verified repayment-capacity evidence path must be available. This defines evidence types, not a minimum count of alternative-data signals.",
+    "any_of": [
+      {
+        "id": "EV-TX",
+        "label": "Verified HLB transaction history covering at least the configured observation period",
+        "source": "hlb_transactions",
+        "requires_field": {
+          "has_observable_tx": 1
+        },
+        "min_period_months": 6
+      },
+      {
+        "id": "EV-CIC",
+        "label": "Verified formal credit history",
+        "source": "credit_information",
+        "requires_field": {
+          "has_formal_cic_history": 1
+        }
+      },
+      {
+        "id": "EV-ALT",
+        "label": "Validated alternative income data (customer consented, Layer 2) covering the observation period",
+        "source": "alternative_data",
+        "requires_field_present": "alt_monthly_income_vnd",
+        "min_period_months": 6
+      }
+    ],
+    "min_period_months_source": "DEMO_ASSUMPTION",
+    "note": "v6: e-wallet activity (EV-3P) removed as an evidence path - top-up counts show activity, not repayment capacity; they remain a Layer 1 risk/behaviour variable."
+  },
+  "review_rules": [
+    {
+      "rule_id": "R-REV-01",
+      "field": "rapid_drain_flag",
+      "op": "eq",
+      "value": 1,
+      "source": "DOCUMENTED",
+      "message": "Rapid fund withdrawal after top-up detected (rapid_drain_flag = 1). Credit-officer review; never an automatic decline.",
+      "customer_message": "Some recent account activity needs to be verified."
+    },
+    {
+      "rule_id": "RF-01",
+      "field": "internal_delinquency_flag",
+      "op": "eq",
+      "value": 1,
+      "source": "APP_STATE",
+      "message": "Internal (simulated) missed-instalment flag from an earlier Smart Credit loan. Not a CIC record.",
+      "customer_message": "A missed instalment on an earlier Smart Credit loan needs to be checked."
+    },
+    {
+      "rule_id": "RF-02",
+      "field": "unified_credit_score",
+      "op": "lt",
+      "value": 436,
+      "source": "DATASET_PERCENTILE",
+      "message": "Unified credit score below 436 (dataset 10th percentile, demo cut-off for credit-officer review only).",
+      "customer_message": "Your credit profile needs some extra verification."
+    },
+    {
+      "rule_id": "RF-03",
+      "field": "on_time_bill_ratio",
+      "op": "lt",
+      "value": 0.663,
+      "source": "DATASET_PERCENTILE",
+      "message": "On-time bill ratio below 0.663 (dataset 10th percentile, demo cut-off for credit-officer review only).",
+      "customer_message": "Your recent bill-payment record needs some extra verification."
+    },
+    {
+      "rule_id": "RF-03L2",
+      "field": "alt_on_time_bill_ratio",
+      "op": "lt",
+      "value": 0.663,
+      "source": "DATASET_PERCENTILE",
+      "message": "On-time ratio from validated Layer 2 utility/telecom history below 0.663 (same cut-off as RF-03). Officer review.",
+      "customer_message": "Your recent bill-payment record needs some extra verification."
+    }
+  ],
+  "hard_stop_rules": [
+    {
+      "rule_id": "HS-01",
+      "label": "Required consent not given or withdrawn",
+      "source": "DEMO_ASSUMPTION",
+      "band": "STOP"
+    },
+    {
+      "rule_id": "HS-03",
+      "label": "Instalment in arrears: line frozen",
+      "source": "DEMO_ASSUMPTION",
+      "band": "RED"
+    },
+    {
+      "rule_id": "HS-04",
+      "label": "Loan in (simulated) default: line suspended",
+      "source": "DEMO_ASSUMPTION",
+      "band": "RED"
+    },
+    {
+      "rule_id": "HS-05",
+      "label": "Fraud confirmed by a credit officer",
+      "source": "DEMO_ASSUMPTION",
+      "band": "STOP"
+    }
+  ],
+  "approval_conditions": {
+    "source": "DEMO_ASSUMPTION",
+    "note": "Automatic approval requires every condition; anything else is an automated data request (AMBER, customer consent), a verified decline (RED) or an officer referral (AMBER) - see decision_rules.md section 3.",
+    "conditions": [
+      {
+        "id": "AC-01",
+        "label": "Layer 0 identity & fraud checks clear"
+      },
+      {
+        "id": "AC-02",
+        "label": "No arrears or default on Smart Credit"
+      },
+      {
+        "id": "AC-03",
+        "label": "Used data valid, verified, fresh and de-duplicated"
+      },
+      {
+        "id": "AC-04",
+        "label": "Income and obligations verified; capacity computed"
+      },
+      {
+        "id": "AC-05",
+        "label": "Stressed capacity at or above the product minimum (raw capacity)"
+      },
+      {
+        "id": "AC-06",
+        "label": "No profile risk flag requiring judgement"
+      },
+      {
+        "id": "AC-07",
+        "label": "Repayment-behaviour signal available (CIC history, bill payments or validated utility data)"
+      },
+      {
+        "id": "AC-08",
+        "label": "Every Layer 2 income source used passes AV-01..AV-07 (identity, period, freshness, values, activity, trend, de-duplication)"
+      }
+    ]
+  },
+  "repayment_terms": {
+    "source": "DEMO_ASSUMPTION",
+    "label": "Illustrative fictional demo terms - not an HLBVN product, rate or fee",
+    "annual_interest_rate_pct": 12,
+    "upfront_fee_vnd": 0,
+    "offered_tenures": [
+      3,
+      6,
+      9,
+      12,
+      18,
+      24
+    ],
+    "default_tenure": 6,
+    "first_due_after_months": 1,
+    "rounding_vnd": 1000,
+    "rate_basis": "FLAT_ON_ORIGINAL_PRINCIPAL",
+    "rate_note": "12% per year, flat on the original principal (DEMO_ASSUMPTION). The equivalent reducing-balance and effective annual rates are disclosed. Dataset recorded rates were 15.4-31% (median 20.85%) - not used.",
+    "overdue_interest_note": "Overdue interest per loan_servicing.overdue_interest (no flat late fee)."
+  },
+  "payment_simulation": {
+    "processing_delay_ms": 1200,
+    "max_retries": 2,
+    "source": "DEMO_ASSUMPTION"
+  },
+  "terms_and_conditions": {
+    "version": "SC-TC-2026.11-demo",
+    "source": "DEMO_ASSUMPTION",
+    "note": "Smart Credit product terms are accepted at activation. Each purchase has its own instalment agreement accepted on the Review & Confirm screen with Smart OTP."
+  },
+  "review_rules_note": "Each flag routes the case to a credit officer (Amber review on Layer 1 data; the officer may request consent-based alternative data). Percentile cut-offs describe the dataset distribution; they are NOT validated risk thresholds (the default label is unusable) and are never used to decline.",
+  "checkout": {
+    "timeout_seconds": 300,
+    "source": "DEMO_ASSUMPTION",
+    "note": "Applies to customer-side steps only. Checkout never waits for a credit officer. The credit outcome (GREEN / split / RED) and the product-scope outcome (N/A) are shown as such; Pay Now is always shown as a separate payment option.",
+    "consent_pause_seconds": 1800,
+    "consent_pause_note": "DEMO_ASSUMPTION: opening the activation consent at checkout suspends the 5-minute checkout countdown (safety expiry 30 minutes) so consent is not given under time pressure.",
+    "payment_processing_timeout_seconds": 120,
+    "payment_processing_timeout_note": "DEMO_ASSUMPTION: a payment stuck in DISBURSEMENT_PROCESSING longer than this is reconciled as failed. Nothing is posted before the final commit (debit, loan, hold booking and settlement are one database transaction), so no compensation is needed; the hold stays until the checkout expires or the customer retries."
+  },
+  "loan_servicing": {
+    "source": "DEMO_ASSUMPTION",
+    "reminder_days_before_due": 3,
+    "missed_payment_creates_internal_flag": true,
+    "cic_reporting": "None - the prototype never reports to or updates the real CIC.",
+    "default_after_days_overdue": 90,
+    "default_status_note": "After an unpaid instalment is more than 90 days overdue, mark the loan DEFAULT in this demo only. This is not a CIC report or real-world bad-debt classification.",
+    "overdue_interest": {
+      "source": "LEGAL_REQUIREMENT (caps) + DEMO_ASSUMPTION (rates)",
+      "overdue_principal_rate_multiplier": 1.5,
+      "overdue_principal_legal_cap_multiplier": 1.5,
+      "late_interest_rate_pct_per_year": 10,
+      "late_interest_legal_cap_pct_per_year": 10,
+      "day_count": 365,
+      "legal_basis": "Circular 39/2016/TT-NHNN Art. 13.4 (consolidated 86/VBHN-NHNN, 2026): overdue principal bears interest at no more than 150% of the in-term rate at the time it becomes overdue; unpaid interest bears late-payment interest of at most 10%/year. Art. 14 lists the permitted lending fees and contains no late-payment fee, so the v4 flat VND 50,000 fee was removed. Values must be disclosed in the agreement before signing; HLBVN Legal to confirm.",
+      "note": "Accrues daily (simple interest) from the due date on the overdue instalment's principal (at multiplier x the contract rate) and on its interest part (at the late-interest rate)."
+    }
+  },
+  "approval_status_default": "PENDING_HLBVN_APPROVAL",
+  "product_model": {
+    "source": "DEMO_ASSUMPTION",
+    "journeys": {
+      "LIMIT_ACTIVATION": "Before (or, if instantly Green, during) shopping: legal data notice & consent, Layer 0, automatic Layer 1 acquisition, automated Layer 2 request only when Layer 1 is absent or insufficient, automatic decision inside policy, officer review only for judgement cases.",
+      "INSTANT_CHECKOUT": "At the counter: spend an approved line only. Mandatory transaction checks, exposure hold, per-tenure affordability, review & confirm, step-up authentication. Never waits for a human."
+    },
+    "positioning": "Smart Credit is a revolving, merchant-linked instalment line inside HLB Connect. It is not a second personal loan: it is proposed to reuse HLB's loan origination, CIC enquiry and customer data, and it is shown in one exposure view with the existing in-app personal loan."
+  },
+  "affordability": {
+    "source": "DEMO_ASSUMPTION",
+    "approval_status": "PENDING_HLBVN_CREDIT_POLICY",
+    "note": "Illustrative capacity rule so the prototype can make a repayment-capacity decision (Circular 39/2016/TT-NHNN Art. 7 requires repayment capacity; the numbers are NOT HLBVN policy).",
+    "max_total_dti": 0.5,
+    "conservative_income": {
+      "source": "DEMO_ASSUMPTION",
+      "approval_status": "PENDING_HLBVN_CREDIT_POLICY",
+      "method": "P25_MONTH",
+      "percentile": 25,
+      "min_series_months": 6,
+      "cv_when_missing": 0.5,
+      "note": "Automatic (STP) capacity uses a conservative monthly income: the estimated 25th-percentile month (income the customer exceeds in about 3 months out of 4). With a monthly series (Layer 2 adapters) it is the empirical 25th percentile; with only a mean and CV (Layer 1 extract, dataset) it is mean x (1 - z x CV) with z from the percentile (0.6745 for P25), the normal-approximation estimate. Replaces the v4 rule that used CV itself as the share of income at risk. Officers may size up to the capacity on AVERAGE verified income with a specific reason code."
+    },
+    "reference_tenure_months": 12,
+    "income_multiplier_cap": 2.0,
+    "product_max_limit_vnd": 90100000,
+    "product_max_limit_source": "DOCUMENTED (case range of requested_loan_vnd)",
+    "min_limit_vnd": 1600000,
+    "min_limit_source": "DOCUMENTED (case minimum purchase)",
+    "limit_rounding_vnd": 500000,
+    "stp_max_limit_vnd": 90100000,
+    "stp_max_limit_source": "v6 DEMO_ASSUMPTION pending HLBVN credit-policy approval: the automatic decision authority equals the product scope (VND 1.6M-90.1M). Limits are bounded by verified capacity (stressed income, 50% debt-service ceiling, 2x income multiple) and the per-customer digital-lending cap; an extra 50M amount ceiling bound for 918 of 10,000 replay rows without addressing an identified risk.",
+    "minimum_test": "RAW_CAPACITY",
+    "minimum_test_note": "The product minimum is tested on raw (unrounded) capacity. A raw capacity at or above the minimum gets at least the minimum limit; rounding never creates a decline (v4 effective minimum was 2.0M).",
+    "officer_limit_step_vnd": 100000,
+    "income_multiplier_source": "DEMO_ASSUMPTION. Benchmark: Bank Negara Malaysia caps credit-card limits at 2x monthly income per issuer for cardholders earning <= RM36,000 a year (BNM, 18 Mar 2011). Applied here to the stressed income for STP and to average income for officers.",
+    "product_scope": {
+      "min_vnd": 1600000,
+      "max_vnd": 90100000,
+      "source": "DOCUMENTED (case range)",
+      "below_min": "Not a credit decision: Pay Later is not applicable (code R030-AMT); Pay Now offered.",
+      "above_max": "Outside the solution's scope: the in-scope part (<= 90.1M) can be offered (activation counter-offer / checkout split tender) and the request is referred to HLB lending for human review outside Smart Credit (OUT_OF_SCOPE_REFERRAL). Never processed as eligible above 90.1M."
+    },
+    "income_multiplier_base": "RECOGNISED_INCOME"
+  },
+  "credit_line": {
+    "source": "DEMO_ASSUMPTION",
+    "review_after_days": 90,
+    "note": "Limit = capacity-based amount approved at activation. Available = limit - outstanding PRINCIPAL - active holds. Interest and fees are not counted against the limit. Assessment older than review_after_days needs a refresh (freshness rule, 90-day CASA window).",
+    "renewal_lead_days": 15,
+    "review_grace_days": 30,
+    "renewal_note": "DEMO_ASSUMPTION: from day 75 an automatic Layer 1 refresh re-runs the activation rules. GREEN renews the line (never raises the limit; reduces it to the new capacity if lower). Anything else goes to an officer while the existing limit stays usable until the review concludes, at most review_after_days + review_grace_days."
+  },
+  "credit_limit": {
+    "source": "DEMO_ASSUMPTION",
+    "max_limit_vnd": 90100000,
+    "note": "Limit increases are assessed automatically with refreshed Layer 1 data and, when Layer 1 is short of the request, an automated Layer 2 request; GREEN raises the limit, a partial result is a counter-offer, otherwise the increase is declined (R020-INC) and the line is unchanged.",
+    "above_max": "Requests above 90.1M are capped at 90.1M and the excess is referred out of scope (R030-OOS)."
+  },
+  "delinquency": {
+    "source": "DEMO_ASSUMPTION",
+    "approval_status": "PENDING_HLBVN_CREDIT_POLICY",
+    "freeze_when_days_overdue_gt": 0,
+    "default_after_days_overdue": 90,
+    "default_suspends_line": true,
+    "cure_on_time_instalments": 3,
+    "note": "Any overdue instalment freezes new Pay Later spending (HS-03). DEFAULT suspends the line (HS-04); after the default is cured an officer reinstatement case decides whether to reopen it. internal_delinquency_flag clears after N consecutive instalments paid by their due date, counted only once each due date has passed.",
+    "cure_rule": "An instalment counts toward cure only after its due date has passed and only if it was paid on or before that date; prepaying future instalments does not cure (v4 cleared the flag on the same day).",
+    "reinstatement": {
+      "source": "DEMO_ASSUMPTION",
+      "approval_status": "PENDING_HLBVN_CREDIT_POLICY",
+      "trigger": "All overdue amounts on the defaulted loan(s) are paid (default cured)",
+      "decided_by": "OFFICER",
+      "max_limit": "PREVIOUS_LIMIT",
+      "note": "Paying the arrears returns the loan to ACTIVE servicing; the line stays SUSPENDED until an officer reinstates it on refreshed Layer 1 data (reason code RI-xx) or closes it."
+    },
+    "grace_note": "OPEN for HLBVN: Circular 31/2024/TT-NHNN keeps debt overdue under 10 days in Group 1; freezing from day 1 is a prudent product choice, configurable via freeze_when_days_overdue_gt."
+  },
+  "reason_codes": {
+    "source": "DEMO_ASSUMPTION",
+    "note": "Proposal slide 5 structure: R001 Green, R010 Amber, R020 Red; v6 adds R030 = not applicable (product scope, never a credit decision). Pay Now is a payment option shown next to every outcome, never a substitute for a decision.",
+    "codes": {
+      "R001": {
+        "band": "GREEN",
+        "label": "Approved within an authorised pathway"
+      },
+      "R010-VER": {
+        "band": "AMBER",
+        "label": "Invalid source data (data-integrity check) - officer review"
+      },
+      "R010-EVD": {
+        "band": "AMBER",
+        "label": "Layer 1 evidence absent - automated Layer 2 request (customer consent per source)"
+      },
+      "R010-FLAG": {
+        "band": "AMBER",
+        "label": "Profile risk flag requiring judgement - credit officer review"
+      },
+      "R010-INCOME": {
+        "band": "AMBER",
+        "label": "No verified Layer 1 income - automated Layer 2 request"
+      },
+      "R010-OBL": {
+        "band": "AMBER",
+        "label": "Existing obligations not confirmed"
+      },
+      "R010-API": {
+        "band": "AMBER",
+        "label": "Data source unavailable - the system retries automatically (no officer)"
+      },
+      "R010-PENDING": {
+        "band": "AMBER",
+        "label": "Limit activation in review (checkout falls back to Pay Now)"
+      },
+      "R010-STALE": {
+        "band": "AMBER",
+        "label": "Limit review due"
+      },
+      "R020-CAP": {
+        "band": "RED",
+        "label": "Verified obligations exceed the debt-service ceiling even on average income; Layer 2 exhausted or implausible"
+      },
+      "R020-ARR": {
+        "band": "RED",
+        "label": "Arrears on Smart Credit"
+      },
+      "R020-DEF": {
+        "band": "RED",
+        "label": "Smart Credit loan in default"
+      },
+      "R020-AFF": {
+        "band": "RED",
+        "label": "Repayments would exceed affordability"
+      },
+      "R020-OFF": {
+        "band": "RED",
+        "label": "Declined by a credit officer"
+      },
+      "HS-01": {
+        "band": "STOP",
+        "label": "Consent missing or withdrawn"
+      },
+      "R010-ALT": {
+        "band": "AMBER",
+        "label": "Validated Layer 2 income outside the automatic conditions (AV-05 activity / AV-06 trend) - officer review"
+      },
+      "R010-RECHECK": {
+        "band": "AMBER",
+        "label": "Re-evaluated during officer review - decision stays with the officer"
+      },
+      "R010-INCR": {
+        "band": "AMBER",
+        "label": "Limit increase in assessment (automatic)"
+      },
+      "R001-CO": {
+        "band": "GREEN",
+        "label": "Approved at a lower limit (counter-offer) - opens only when the customer accepts"
+      },
+      "R010-CAPX": {
+        "band": "AMBER",
+        "label": "Capacity short on Layer 1 - automated Layer 2 request; officer only if still short on stressed income after Layer 2"
+      },
+      "R010-FRD": {
+        "band": "AMBER",
+        "label": "Identity or fraud signal - officer review, never an automatic decline"
+      },
+      "R010-SPLIT": {
+        "band": "AMBER",
+        "label": "Split tender offered: Pay Later up to the available/affordable amount, Pay Now for the rest"
+      },
+      "R010-LIMREV": {
+        "band": "AMBER",
+        "label": "Available limit below the minimum for this purchase - Pay Now, limit review off the checkout"
+      },
+      "R010-REVIEW": {
+        "band": "AMBER",
+        "label": "Credit-line review referred to an officer (line stays usable during the review)"
+      },
+      "R010-REINST": {
+        "band": "AMBER",
+        "label": "Line reinstatement after a cured default - officer review"
+      },
+      "HS-05": {
+        "band": "STOP",
+        "label": "Fraud confirmed by an officer"
+      },
+      "R020-EVD": {
+        "band": "RED",
+        "label": "Repayment capacity cannot be verified: no Layer 1 income and no usable Layer 2 income (appeal or re-apply with data)"
+      },
+      "R020-INC": {
+        "band": "RED",
+        "label": "Limit increase not supported by verified capacity (line unchanged)"
+      },
+      "R030-MER": {
+        "band": "N/A",
+        "label": "Merchant / QR not eligible for Pay Later (product scope, not a credit decision)"
+      },
+      "R030-AMT": {
+        "band": "N/A",
+        "label": "Purchase below the product minimum (product scope, not a credit decision)"
+      },
+      "R030-OOS": {
+        "band": "N/A",
+        "label": "Requested amount above VND 90,100,000 - outside Smart Credit scope, referred to HLB lending"
+      },
+      "R001-L2": {
+        "band": "GREEN",
+        "label": "Approved automatically on Layer 1 + validated Layer 2 income"
+      },
+      "R010-THIN": {
+        "band": "AMBER",
+        "label": "No repayment-behaviour signal - automated utility/telecom request, then officer review"
+      }
+    }
+  },
+  "officer_controls": {
+    "source": "DEMO_ASSUMPTION",
+    "approval_status": "CASE_ASSUMPTION",
+    "sla_hours": 24,
+    "sla_source": "UNRESOLVED - Proposal: 'SLA agreed at Gate 2'. 24h is a demo placeholder.",
+    "customer_expected_decision_text_hours": 24,
+    "daily_review_capacity": 48,
+    "daily_review_capacity_source": "Proposal slide 10 planning proxy (~48 Amber cases per business day at full pilot coverage)",
+    "approval_reason_codes": {
+      "AP-01": "Income verified from bank or API data; capacity supports limit",
+      "AP-02": "Data conflict resolved with verified data",
+      "AP-03": "Risk flag explained by verified evidence",
+      "AP-04": "Approved at a lower (counter-offer) limit",
+      "AP-05": "Income volatility mitigated by verified evidence (limit above the stressed automatic capacity)",
+      "AP-06": "Identity / fraud signal reviewed and cleared",
+      "RI-01": "Line reinstated after cured default on refreshed Layer 1 data"
+    },
+    "rejection_reason_codes": {
+      "RJ-01": "Repayment capacity not demonstrated",
+      "RJ-02": "Data could not be verified",
+      "RJ-03": "Unexplained risk indicator",
+      "RJ-04": "Information inconsistent after review",
+      "RJ-05": "Line not reinstated after default"
+    },
+    "green_qa_sample_pct": 5,
+    "green_qa_sample_source": "DOCUMENTED (Proposal slide 9/10: 5% QA sample of Green decisions). Selection is deterministic (hash of application id) so it is reproducible and auditable.",
+    "approval_authority_max_vnd": 90100000,
+    "approval_authority_bound": "INCLUSIVE",
+    "approval_authority_source": "v6 CASE_ASSUMPTION: credit officers have full decision authority (approve, reduce, decline) over cases referred to human review anywhere in the product scope VND 1.6M-90.1M. Supersedes the earlier < VND 90M assumption, which left 90.0-90.1M approvable by nobody. Not HLBVN's delegated-authority policy.",
+    "fraud_reason_codes": {
+      "FR-01": "Fraud confirmed (identity misuse or application fraud)"
+    },
+    "above_stressed_capacity_requires": [
+      "AP-01",
+      "AP-02",
+      "AP-05"
+    ],
+    "governance": {
+      "prototype": "Single credit-officer role, no profiles and no access code (case assumption). The engine appraises every case and decides automatically only inside the approved policy rules; officers decide every referred case within the product scope. Automatic decisions are sampled for QA (5%; 10% when Layer 2 income was used).",
+      "production_required": [
+        "Named officer identity via HLBVN staff SSO, recorded on every decision",
+        "Delegated-authority tiers configured by HLBVN (replacing the single product-scope case assumption)",
+        "Four-eyes approval above an HLBVN threshold and for fraud confirmation",
+        "Credit-committee approval and versioning of the automated decision rules (owner of the rule set)",
+        "Legal confirmation that automated decisions for small digital loans satisfy the appraisal/decision separation principle"
+      ],
+      "unverified_claim": "The audit's statement that digital-lending rules require the decision system to be assigned to named people could not be confirmed from the consolidated text reviewed (Arts. 32a-32h not in the excerpt; Circular 29/2026 repealed Arts. 32c and 32h). Treated as good practice, pending HLBVN Legal."
+    },
+    "above_stressed_capacity_note": "An officer may approve above the automatic (25th-percentile) capacity, up to the capacity on average verified income, only with a reason code that states the basis: AP-01 (income verified from bank/API data, incl. Layer 2), AP-02 (data conflict resolved with verified data) or AP-05 (volatility mitigated by verified evidence).",
+    "data_operations": "Officers never request or refresh data. Layer 1 acquisition, Layer 2 selection, consent requests, API calls, validation, retries after outages and re-runs of the rules are automatic; officers receive a consolidated case summary and decide.",
+    "layer2_qa_sample_pct": 10,
+    "layer2_qa_sample_source": "DEMO_ASSUMPTION: higher post-decision QA sampling while Layer 2 sources have no HLB performance history."
+  },
+  "authentication": {
+    "source": "OFFICIAL_HLB_SOURCE + DEMO_ASSUMPTION",
+    "note": "SIMULATED. Real HLB Connect Smart OTP / face authentication integration required. Thresholds from the official HLB Connect page and face-authentication notice (Decision 2345/QD-NHNN): face authentication for transactions of VND 10M or more, or a daily total of VND 20M or more; Smart/SMS OTP otherwise (OTP valid 2 minutes). HLBVN also requires face authentication on the first in-app transaction and on a new device - not modelled.",
+    "otp_digits": 6,
+    "otp_ttl_seconds": 120,
+    "otp_ttl_source": "OFFICIAL_HLB_SOURCE (HLB Connect page: OTP valid 2 minutes)",
+    "max_attempts": 3,
+    "face_threshold_per_transaction_vnd": 10000000,
+    "face_threshold_daily_vnd": 20000000,
+    "applies_to": [
+      "ACCOUNT_PAYMENT",
+      "PAY_LATER_AGREEMENT",
+      "INSTALMENT_CONVERSION"
+    ],
+    "threshold_comparison": "GREATER_OR_EQUAL"
+  },
+  "merchant_eligibility": {
+    "source": "DEMO_ASSUMPTION",
+    "note": "Eligibility resolved from the QR's MCC (ISO 18245) and the partner-merchant registry. PROPOSED pilot cohort: So Ban Hang merchants (HLBVN partnership announced Oct 2025). Not integrated.",
+    "excluded_mcc": {
+      "6051": "Quasi-cash / e-money",
+      "6540": "Stored-value card load",
+      "4829": "Money transfer",
+      "7995": "Gambling",
+      "6011": "ATM cash",
+      "6012": "Financial institution - merchandise/services"
+    },
+    "require_partner_merchant": true
+  },
+  "settlement": {
+    "source": "PROPOSED - NOT INTEGRATED",
+    "model": "Merchant receives the gross purchase amount; Pay Later settlement scheduled T+1 business day (demo).",
+    "settlement_days": 1,
+    "merchant_discount_rate_pct": null,
+    "merchant_discount_rate_source": "UNRESOLVED - commercial terms to be agreed with HLBVN and merchants"
+  },
+  "instalment_conversion": {
+    "source": "DEMO_ASSUMPTION",
+    "window_days": 7,
+    "note": "Audit R1 fallback: a Pay Now purchase at an eligible merchant can be converted to instalments within 7 days once a line is active and the conversion passes the same transaction checks.",
+    "disbursement": "REVERSE_ORIGINAL_DEBIT",
+    "legal_note": "Conversion refinances one specific, already-settled merchant purchase: the loan is booked with purpose PURCHASE_FINANCING against that transaction and the disbursement is recorded as a reversal of that purchase's account debit (never more than the purchase, only once). This is lending to compensate funds already spent, which Circular 39 Art. 8.10 would prohibit; that clause has been suspended since 1 Sep 2023 (Circular 10/2023) and is still suspended in consolidated text 86/VBHN-NHNN (2026). If it is reinstated, conversion must be disabled. HLBVN Legal to confirm loan-purpose documentation (Art. 7.2).",
+    "enabled": true
+  },
+  "demo_integrity": {
+    "source": "DEMO_ASSUMPTION",
+    "note": "Navigation/presenter controls (clock, failures, outages, reset) are a separate page and need a presenter session (no access code, case assumption). Reset never deletes the append-only audit log. Run one local instance per audience. v5 adds a 'device anomaly' switch for Layer 0."
+  },
+  "data_acquisition": {
+    "source": "DEMO_ASSUMPTION",
+    "note": "Every adapter is a deterministic SIMULATION. No call leaves this server; no real CIC, core-banking, Open API, tax, marketplace, platform or utility connection exists. Latencies are illustrative.",
+    "timeout_ms": 3000,
+    "retries": 1,
+    "layer1": [
+      {
+        "id": "hlb_core_profile",
+        "label": "HLB customer profile & account status",
+        "provider": "HLB core banking (simulated)",
+        "legal_basis": "Existing customer relationship; internal data",
+        "fields": [
+          "customer_profile",
+          "account_status"
+        ]
+      },
+      {
+        "id": "hlb_transactions",
+        "label": "HLB account transactions & inflows (6 months)",
+        "provider": "HLB core banking (simulated)",
+        "legal_basis": "Legal data-processing step DATA_PROCESSING (no per-variable consent)",
+        "fields": [
+          "has_observable_tx",
+          "monthly_inflow_vnd",
+          "inflow_cv",
+          "casa_balance_vnd",
+          "regular_weekly_pattern",
+          "rapid_drain_flag",
+          "on_time_bill_ratio"
+        ]
+      },
+      {
+        "id": "hlb_credit_exposure",
+        "label": "Existing HLB credit exposure & Smart Credit repayment history",
+        "provider": "HLB loan systems (simulated)",
+        "legal_basis": "Internal data",
+        "fields": [
+          "existing_hlb_products",
+          "internal_delinquency_flag"
+        ]
+      },
+      {
+        "id": "cic",
+        "label": "CIC credit report",
+        "provider": "CIC via authorised bank integration (simulated)",
+        "legal_basis": "Legal data-processing step DATA_PROCESSING (covers the CIC enquiry)",
+        "fields": [
+          "has_formal_cic_history",
+          "unified_credit_score",
+          "dti_ratio"
+        ]
+      },
+      {
+        "id": "ewallet_activity",
+        "label": "E-wallet top-up activity (dataset variable)",
+        "provider": "Partner data already in the case dataset (simulated)",
+        "legal_basis": "Legal data-processing step DATA_PROCESSING",
+        "fields": [
+          "e_wallet_topups_pm"
+        ]
+      }
+    ],
+    "layer2_sources": [
+      {
+        "id": "open_banking",
+        "label": "Account data at another bank (Open API)",
+        "category": "OPEN_BANKING",
+        "provides": [
+          "VERIFIED_INCOME",
+          "TRANSACTION_HISTORY"
+        ],
+        "period_months": 6,
+        "income_recognition_factor": 1.0,
+        "purpose": "Read credits into your account at another bank for the last 6 months, once, to add income held outside HLB to this assessment.",
+        "data_requested": [
+          "Monthly credits (6 months)",
+          "Account holder name match"
+        ],
+        "feasibility": "FEASIBLE_REGULATED",
+        "legal_note": "SBV Circular 64/2024/TT-NHNN (Open API in banking, effective 1 Mar 2025) provides a consent-based framework; needs the other bank's Open API and an HLBVN agreement. To be confirmed by HLBVN Legal.",
+        "status": "SIMULATED",
+        "tier": "A",
+        "priority": 1,
+        "recognition": "BY_CATEGORY",
+        "stp_income": true,
+        "eligible_profiles": null,
+        "reliability": "Regulated bank data via SBV Open API (Circular 64/2024/TT-NHNN, in force 1 Mar 2025; banks must comply by 1 Mar 2027); needs a contract with the data-holding bank (Art. 8) and the customer's consent, access <= 180 days (Art. 11.6).",
+        "decision_use": "INCOME (classified by category, same factors as Layer 1)"
+      },
+      {
+        "id": "e_invoice",
+        "label": "E-invoice / tax revenue",
+        "category": "TAX_EINVOICE",
+        "provides": [
+          "VERIFIED_INCOME"
+        ],
+        "period_months": 6,
+        "income_recognition_factor": 0.3,
+        "purpose": "Read the total value of e-invoices you issued in the last 6 months, once, to estimate business income.",
+        "data_requested": [
+          "Monthly e-invoice totals (6 months)",
+          "Tax code match"
+        ],
+        "feasibility": "CONDITIONAL",
+        "legal_note": "E-invoices are held by the General Department of Taxation (Decree 123/2020/ND-CP). Access needs taxpayer authorisation and a data agreement or an authorised e-invoice provider; not assumed to exist. Business customers only.",
+        "eligible_profiles": [
+          "Online merchants (MSME)"
+        ],
+        "status": "SIMULATED",
+        "tier": "B",
+        "priority": 4,
+        "stp_income": true,
+        "reliability": "E-invoice totals held by the tax authority (Decree 123/2020/ND-CP); turnover, not profit; access conditional.",
+        "decision_use": "INCOME at 0.3 (turnover)"
+      },
+      {
+        "id": "marketplace",
+        "label": "Marketplace seller revenue",
+        "category": "MARKETPLACE",
+        "provides": [
+          "VERIFIED_INCOME"
+        ],
+        "period_months": 6,
+        "income_recognition_factor": 0.3,
+        "purpose": "Read your net seller payouts from a partner marketplace for the last 6 months, once.",
+        "data_requested": [
+          "Monthly net payouts (6 months)",
+          "Seller account match"
+        ],
+        "feasibility": "PARTNERSHIP_REQUIRED",
+        "legal_note": "No public API; needs a commercial data-sharing agreement with the marketplace and the seller's consent.",
+        "eligible_profiles": [
+          "Online merchants (MSME)"
+        ],
+        "status": "SIMULATED",
+        "tier": "B",
+        "priority": 3,
+        "stp_income": true,
+        "reliability": "First-party marketplace payout records via a partner API; turnover, not profit.",
+        "decision_use": "INCOME at 0.3 (turnover)"
+      },
+      {
+        "id": "gig_platform",
+        "label": "Platform / gig earnings",
+        "category": "PLATFORM_INCOME",
+        "provides": [
+          "VERIFIED_INCOME"
+        ],
+        "period_months": 6,
+        "income_recognition_factor": 0.7,
+        "purpose": "Read your net earnings from a partner ride-hailing or delivery platform for the last 6 months, once.",
+        "data_requested": [
+          "Monthly net earnings (6 months)",
+          "Driver/partner ID match"
+        ],
+        "feasibility": "PARTNERSHIP_REQUIRED",
+        "legal_note": "Needs a data-sharing agreement with the platform and the worker's consent.",
+        "eligible_profiles": [
+          "Gig / platform workers"
+        ],
+        "status": "SIMULATED",
+        "tier": "B",
+        "priority": 2,
+        "stp_income": true,
+        "reliability": "First-party platform payout records via a partner API; identity verified by the platform; volatile.",
+        "decision_use": "INCOME at 0.7 (pre-cost payouts)"
+      },
+      {
+        "id": "utility_bills",
+        "label": "Utility & telecom bill payment history",
+        "category": "PAYMENT_HISTORY",
+        "provides": [
+          "PAYMENT_BEHAVIOUR"
+        ],
+        "period_months": 12,
+        "income_recognition_factor": 0.0,
+        "purpose": "Read whether your electricity and mobile bills were paid on time in the last 12 months, once. Used only as a repayment-behaviour check; it never sets your limit.",
+        "data_requested": [
+          "On-time payment count (12 months)"
+        ],
+        "feasibility": "PARTNERSHIP_REQUIRED",
+        "legal_note": "Needs agreements with utility/telecom providers or a payment aggregator; behavioural evidence only.",
+        "status": "SIMULATED",
+        "tier": "C",
+        "priority": 5,
+        "stp_income": false,
+        "reliability": "Payment-behaviour records (utility/telecom). Predictive of delinquency in US studies (PERC 2006, 2015) but says nothing about income.",
+        "decision_use": "REPAYMENT_BEHAVIOUR only (AC-07); never income, never capacity"
+      },
+      {
+        "id": "ewallet",
+        "label": "E-wallet top-up activity",
+        "category": "EWALLET",
+        "provides": [
+          "TRANSACTION_HISTORY"
+        ],
+        "period_months": 6,
+        "income_recognition_factor": 0.0,
+        "purpose": "Read how often you topped up your partner e-wallet in the last 6 months, once. Activity evidence only; never income.",
+        "data_requested": [
+          "Monthly top-up count (6 months)"
+        ],
+        "feasibility": "PARTNERSHIP_REQUIRED",
+        "legal_note": "Needs a partner agreement with the e-wallet operator (SBV-licensed intermediary payment provider) and customer consent.",
+        "status": "SIMULATED",
+        "tier": "C",
+        "priority": null,
+        "stp_income": false,
+        "requested": false,
+        "reliability": "Top-up counts are already a Layer 1 dataset variable; top-ups are funded from bank accounts (double counting) and are not income.",
+        "decision_use": "NOT REQUESTED in v6 (evaluated and excluded: no decision use beyond the Layer 1 variable)"
+      }
+    ],
+    "excluded_sources": [
+      {
+        "category": "LOGISTICS",
+        "label": "Logistics / fulfilment data",
+        "reason": "Not relevant to consumer point-of-purchase lending; shipment volumes are not income and no consent-based access route is evidenced."
+      },
+      {
+        "category": "RENTAL",
+        "label": "Rental payment history",
+        "reason": "Mostly informal cash payments in Vietnam; no reliable API or data holder identified."
+      }
+    ],
+    "validation": {
+      "min_period_months": 6,
+      "max_age_days": 45,
+      "require_subject_match": true,
+      "identity_match": "AV-01: the provider record must match the customer on the national ID (CCCD) AND one more identifier (full name or registered phone). A mismatch is a Layer 0 signal (R010-FRD), not missing data.",
+      "min_active_months": 5,
+      "min_active_months_note": "AV-05 stability: income received in at least 5 of the last 6 months.",
+      "min_trend_ratio": 0.7,
+      "min_trend_note": "AV-06 trend: average of the last 3 months at least 70% of the previous 3 months; a larger fall means the income may not continue (cf. Fannie Mae B3-3.1-01: use the lower income when a reduction is known) - officer review, not automatic.",
+      "dedup": "AV-07: income counted once. Platform/marketplace payouts paid into the HLB account are already in Layer 1 and are not added again; payouts paid into another bank are taken from the platform record and removed from Open Banking credits; Open Banking transfers from the customer's own HLB account are excluded; HLB inflows identified as transfers from the customer's other-bank account are excluded from Layer 1 when Open Banking shows them.",
+      "source": "DEMO_ASSUMPTION"
+    },
+    "guarantees": [
+      "Layer 2 is requested by the system only when Layer 1 is absent or insufficient, and only the sources that can close the gap.",
+      "Each source has its own optional, unticked consent with its purpose; declining is never itself a decline reason.",
+      "Validated Layer 1 + Layer 2 income can support an automatic approval or limit increase only when every AC/AV condition holds; behaviour-only sources never count as income.",
+      "Outages are retried automatically; officers never collect data."
+    ],
+    "layer2_missing_items": {
+      "VERIFIED_INCOME": "Income information we can verify, to set your limit.",
+      "ADDITIONAL_INCOME": "Income you receive outside your HLB account, which may support a higher limit.",
+      "REPAYMENT_BEHAVIOUR": "A record of paying bills on time, because there is no credit history yet."
+    },
+    "retry": {
+      "window_hours": 24,
+      "source": "DEMO_ASSUMPTION",
+      "rule": "A Layer 1 or Layer 2 outage keeps the request in automatic assessment: the system retries on every servicing cycle and re-runs the rules when the source answers. After the window the customer is told it is taking longer and operations are alerted (DATA_SOURCE_OUTAGE_ESCALATED). No officer is involved: an officer cannot fix an outage. The customer can cancel or pay now at any time."
+    },
+    "layer2_plan": {
+      "source": "DEMO_ASSUMPTION (rules) - pending HLBVN credit policy and data partnerships",
+      "gaps": {
+        "EVIDENCE": "No Layer 1 evidence path: no verified 6-month transaction history and no CIC history.",
+        "INCOME": "No verified Layer 1 income (absent, untrusted or conflicting).",
+        "CAPACITY": "Stressed Layer 1 capacity below the product minimum.",
+        "OBLIGATIONS": "Verified obligations leave less than the minimum even on average income; requested only if the extra income needed is at most max_uplift_ratio x the verified income (otherwise RED R020-CAP at once).",
+        "REQUEST": "Capacity below the requested limit: never automatic (counter-offer first); runs when the customer asks for more or requests a limit increase."
+      },
+      "max_uplift_ratio": 1.0,
+      "max_uplift_note": "Do not ask for data that would have to more than double verified income: such a request almost never succeeds and only delays a verified decision (all 15 replay breaches need <= 7%).",
+      "selection": "Income sources eligible for the customer's segment (unknown segment -> Open Banking only) in priority order, plus utility/telecom history ONLY when no repayment-behaviour signal exists (no CIC history and no Layer 1 on-time bill ratio). Behaviour-only sources are never requested to fix an income gap.",
+      "order": [
+        "open_banking",
+        "gig_platform",
+        "marketplace",
+        "e_invoice",
+        "utility_bills"
+      ],
+      "call_rule": "Consented sources are called in priority order; after each validated result the capacity is recomputed and calling stops as soon as the gap is closed (data minimisation). Uncalled consents are recorded as unused.",
+      "rounds": "One automatic request per application; a second only when the customer asks for more after a counter-offer."
+    },
+    "aggregation": "v6: verified income streams are SUMMED after de-duplication (AV-07) - a worker with an HLB salary and platform earnings elsewhere has both. STP uses the sum of each stream's stressed (25th-percentile) month, which is never above the 25th percentile of the total; officers see the sum of averages. v5 used only the single highest source, which understated multi-income customers."
+  },
+  "income_classification": {
+    "source": "DEMO_ASSUMPTION",
+    "approval_status": "PENDING_HLBVN_CREDIT_POLICY",
+    "recognition_by_type": {
+      "salary": {
+        "type": "WAGE",
+        "factor": 1.0,
+        "basis": "Employer-identified salary credits."
+      },
+      "platform_payouts": {
+        "type": "PLATFORM_EARNINGS",
+        "factor": 0.7,
+        "basis": "Payouts are after platform commission but before the worker's own vehicle, fuel and maintenance costs (Vietnamese Grab drivers report 35-50% deductions and bearing these costs themselves - VietNamNet, 12 Sep 2026). No reliable cost-share estimate was found: 0.7 is a conservative policy value, not a measured margin."
+      },
+      "merchant_settlements": {
+        "type": "BUSINESS_TURNOVER",
+        "factor": 0.3,
+        "basis": "Sales turnover is not income (cost of goods, fees and stock are unknown). 0.3 caps the share of turnover that can count as income; policy value pending calibration on HLB merchant cash-flow data (inflows minus business outflows)."
+      },
+      "other_third_party_credits": {
+        "type": "UNIDENTIFIED",
+        "factor": 0.0,
+        "basis": "Credits without an identified income source are not income (corroboration only)."
+      }
+    },
+    "excluded_categories": {
+      "own_account_transfers": "Transfers from the customer's own accounts (not income; can be cycled to inflate inflow)",
+      "loan_proceeds": "Disbursements of credit, including other lenders' loans",
+      "refunds_reversals": "Refunds, chargebacks and reversals",
+      "ewallet_movements": "E-wallet top-ups/withdrawals: funded from bank accounts already observed (double counting)"
+    },
+    "eligible_categories": [
+      "salary",
+      "platform_payouts",
+      "merchant_settlements"
+    ],
+    "unclassified_treatment": "USE_AS_INFLOW_WITH_LABEL",
+    "note": "Identified income types are recognised at the same factor whether they arrive in an HLB account (Layer 1) or come from an external API (Layer 2). The supplied dataset has no inflow breakdown, so replay rows use monthly_inflow_vnd as defined (factor 1.0, label UNCLASSIFIED_INFLOW) with the stress percentile as the only adjustment. This overstates income for merchants (turnover) and platform workers (pre-cost payouts): the most material known limitation; HLB core classification in production removes it.",
+    "unclassified_multiplier_type_by_segment": {
+      "Salaried, with credit history": "salary",
+      "Salaried, no credit history": "salary",
+      "First-time borrowers, digitally active": "salary",
+      "Gig / platform workers": "platform_payouts",
+      "Online merchants (MSME)": "merchant_settlements",
+      "UNKNOWN": "merchant_settlements"
+    },
+    "unclassified_multiplier_note": "v6: when the Layer 1 inflow is unclassified, the 50% debt-service test still uses the gross inflow (the base the dataset's DTI ratio is measured on, so income and obligations stay consistent), but the income-multiple exposure cap uses RECOGNISED income = inflow x the type factor implied by the segment (turnover 0.3, platform payouts 0.7, salary 1.0; an unknown segment gets the most conservative eligible factor). Without this, unclassified merchant turnover reached the 90.1M product maximum automatically for 11% of approved MSME replay rows."
+  },
+  "obligations": {
+    "source": "DOCUMENTED (dataset definition) + DEMO_ASSUMPTION (lineage)",
+    "unit": "VND_PER_MONTH",
+    "definition_note": "dataset: dti_ratio = total estimated monthly debt obligations / monthly cash inflow. Obligations are therefore an ABSOLUTE amount = dti_ratio x the gross monthly inflow it was measured on, and are never re-scaled to another income basis (v4 multiplied the ratio by Layer 2 income).",
+    "lineage": {
+      "CIC_REPORTED": "has_formal_cic_history = 1: bureau-reported debt service (dti_ratio x HLB inflow).",
+      "TX_OBSERVED": "No CIC record, observable verified transactions: debt payments observed in HLB account outflows.",
+      "CIC_NO_RECORD": "CIC answered 'no record' and no observable transactions: verified zero external obligations; a supplied dti_ratio cannot be sourced and is not used."
+    },
+    "hlb_internal_dedup": "Existing HLB instalments are added unless flagged included_in_dti (already in the bureau / observed figure).",
+    "refresh_at_checkout": "External obligations come from the line's last assessment; current HLB internal instalments and live Smart Credit instalments are added at every checkout."
+  },
+  "aggregate_exposure": {
+    "source": "LEGAL_REQUIREMENT (principle) + DEMO_ASSUMPTION (value)",
+    "max_digital_unsecured_outstanding_vnd": 100000000,
+    "legal_basis": "Circular 39/2016/TT-NHNN Art. 22.2(h), added by Circular 29/2026/TT-NHNN (effective 15 Aug 2026): for digital lending the credit institution must set a specific outstanding-balance limit per customer. The law sets no figure; VND 100,000,000 is a placeholder for HLBVN to decide.",
+    "scope": "Smart Credit limit plus every other HLB unsecured credit product shown in the single exposure view."
+  },
+  "identity_fraud": {
+    "source": "REQUIREMENT (case brief: verify identity and that each application is genuine, in real time) + DEMO_ASSUMPTION (thresholds)",
+    "approval_status": "PENDING_HLBVN_FRAUD_POLICY",
+    "checks": [
+      {
+        "id": "L0-01",
+        "label": "eKYC completed and CCCD (national ID chip) matches the bank record",
+        "applies_to": [
+          "ACTIVATION",
+          "CHECKOUT"
+        ]
+      },
+      {
+        "id": "L0-02",
+        "label": "National ID not linked to another customer record (duplicate identity)",
+        "applies_to": [
+          "ACTIVATION",
+          "CHECKOUT"
+        ]
+      },
+      {
+        "id": "L0-03",
+        "label": "Session on a bound device (no device / session anomaly)",
+        "applies_to": [
+          "ACTIVATION",
+          "CHECKOUT"
+        ]
+      },
+      {
+        "id": "L0-04",
+        "label": "Application velocity within limit",
+        "applies_to": [
+          "ACTIVATION"
+        ]
+      },
+      {
+        "id": "L0-05",
+        "label": "Pay Later purchase velocity within limit",
+        "applies_to": [
+          "CHECKOUT"
+        ]
+      },
+      {
+        "id": "L0-06",
+        "label": "Layer 2 data belongs to the customer (AV-01 identity match)",
+        "applies_to": [
+          "ACTIVATION"
+        ]
+      }
+    ],
+    "max_applications_30d": 3,
+    "max_pay_later_purchases_per_day": 5,
+    "on_hit": "AMBER R010-FRD: identity & fraud review by an officer. Never an automatic decline. STOP HS-05 only after an officer confirms fraud. At checkout: Pay Now only (step-up authentication still applies).",
+    "simulation_note": "eKYC/CCCD results come from the persona fixtures (simulated C06/eKYC integration); duplicate identity and velocity are computed from the prototype database; device anomaly is a presenter switch."
+  },
+  "risk_indicators_info_only": [
+    {
+      "rule_id": "RF-04",
+      "field": "dti_ratio",
+      "op": "gt",
+      "value": 0.3695,
+      "source": "DATASET_PERCENTILE",
+      "message": "Debt-to-income above the dataset 90th percentile (shown to officers only). v6: no longer routes a case - DTI already enters the capacity formula as absolute obligations against the 50% debt-service ceiling; a second, lower, percentile-based DTI cut-off double-counted it (798 dataset rows were referred for this reason alone)."
+    }
+  ]
+}
